@@ -6,12 +6,13 @@ import DifficultySelector from '../../components/game/DifficultySelector'
 import { saveGamePoints } from '../../utils/points'
 import { getAllFlashcards } from '../../utils/api'
 import type { Flashcard } from '../../utils/api'
+import { defaultGameData } from '../../utils/gameConfig'
 
 interface QuizQuestion {
   id: number
   character: string
   pinyin: string
-  image: string
+  imageUrl: string
   meaning: string
   options: string[]
   correctAnswer: string
@@ -45,7 +46,7 @@ const QuizGame: React.FC = () => {
     return flashcards.map(card => ({
       character: card.character,
       pinyin: card.pinyin,
-      image: card.imageUrl,
+      imageUrl: card.imageUrl,
       meaning: card.meaning
     }))
   }, [flashcards])
@@ -62,18 +63,7 @@ const QuizGame: React.FC = () => {
       } catch (error) {
         console.error('获取flashcard数据失败:', error)
         // 使用默认数据作为备用
-          setFlashcards([
-            { id: 1, character: '人', pinyin: 'rén', imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20person%20for%20children&image_size=portrait_4_3', meaning: 'person', audioUrl: '', ageGroupId: 1 },
-            { id: 2, character: '口', pinyin: 'kǒu', imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20mouth%20for%20children&image_size=portrait_4_3', meaning: 'mouth', audioUrl: '', ageGroupId: 1 },
-            { id: 3, character: '日', pinyin: 'rì', imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20sun%20for%20children&image_size=portrait_4_3', meaning: 'sun', audioUrl: '', ageGroupId: 1 },
-            { id: 4, character: '月', pinyin: 'yuè', imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20moon%20for%20children&image_size=portrait_4_3', meaning: 'moon', audioUrl: '', ageGroupId: 1 },
-            { id: 5, character: '水', pinyin: 'shuǐ', imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20water%20for%20children&image_size=portrait_4_3', meaning: 'water', audioUrl: '', ageGroupId: 1 },
-            { id: 6, character: '火', pinyin: 'huǒ', imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20fire%20for%20children&image_size=portrait_4_3', meaning: 'fire', audioUrl: '', ageGroupId: 1 },
-            { id: 7, character: '山', pinyin: 'shān', imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20mountain%20for%20children&image_size=portrait_4_3', meaning: 'mountain', audioUrl: '', ageGroupId: 1 },
-            { id: 8, character: '石', pinyin: 'shí', imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20stone%20for%20children&image_size=portrait_4_3', meaning: 'stone', audioUrl: '', ageGroupId: 1 },
-            { id: 9, character: '木', pinyin: 'mù', imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20tree%20for%20children&image_size=portrait_4_3', meaning: 'wood', audioUrl: '', ageGroupId: 1 },
-            { id: 10, character: '金', pinyin: 'jīn', imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20gold%20for%20children&image_size=portrait_4_3', meaning: 'gold', audioUrl: '', ageGroupId: 1 }
-          ])
+          setFlashcards(defaultGameData)
       } finally {
         setLoading(false)
       }
@@ -119,7 +109,7 @@ const QuizGame: React.FC = () => {
             id: index,
             character: item.character,
             pinyin: item.pinyin,
-            image: item.image,
+            imageUrl: item.imageUrl,
             meaning: item.meaning,
             options: generateOptions(item.character, gameData.map(d => d.character)),
             correctAnswer: item.character,
@@ -132,7 +122,7 @@ const QuizGame: React.FC = () => {
             id: index,
             character: item.character,
             pinyin: item.pinyin,
-            image: item.image,
+            imageUrl: item.imageUrl,
             meaning: item.meaning,
             options: generateOptions(item.character, gameData.map(d => d.character)),
             correctAnswer: item.character,
@@ -145,7 +135,7 @@ const QuizGame: React.FC = () => {
             id: index,
             character: item.character,
             pinyin: item.pinyin,
-            image: item.image,
+            imageUrl: item.imageUrl,
             meaning: item.meaning,
             options: generateOptions(item.meaning, gameData.map(d => d.meaning)),
             correctAnswer: item.meaning,
@@ -334,10 +324,10 @@ const QuizGame: React.FC = () => {
                   {questions[currentQuestion].questionType !== 'character' && (
                     <div className="mb-6">
                       <img 
-                        src={questions[currentQuestion].image} 
-                        alt={questions[currentQuestion].character}
-                        className="w-full h-48 object-cover rounded-lg"
-                      />
+                      src={questions[currentQuestion].imageUrl} 
+                      alt={questions[currentQuestion].character}
+                      className="w-full h-48 object-cover rounded-lg"
+                    />
                     </div>
                   )}
 

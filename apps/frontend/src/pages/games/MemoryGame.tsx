@@ -6,12 +6,13 @@ import { saveGamePoints } from '../../utils/points'
 import { getAllFlashcards } from '../../utils/api'
 import type { Flashcard } from '../../utils/api'
 import { generateOptions } from '../../utils/gameUtils'
+import { defaultGameData } from '../../utils/gameConfig'
 
 interface MemoryCard {
   id: number
   character: string
   pinyin: string
-  image: string
+  imageUrl: string
 }
 
 interface Question {
@@ -42,18 +43,6 @@ const MemoryGame: React.FC = () => {
   const [flashcards, setFlashcards] = useState<Flashcard[]>([])
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
-
-  // 默认游戏数据（当API调用失败时使用）
-  const defaultGameData = [
-    { character: '人', pinyin: 'rén', image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20person%20for%20children&image_size=portrait_4_3' },
-    { character: '口', pinyin: 'kǒu', image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20mouth%20for%20children&image_size=portrait_4_3' },
-    { character: '日', pinyin: 'rì', image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20sun%20for%20children&image_size=portrait_4_3' },
-    { character: '月', pinyin: 'yuè', image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20moon%20for%20children&image_size=portrait_4_3' },
-    { character: '水', pinyin: 'shuǐ', image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20water%20for%20children&image_size=portrait_4_3' },
-    { character: '火', pinyin: 'huǒ', image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20fire%20for%20children&image_size=portrait_4_3' },
-    { character: '山', pinyin: 'shān', image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20mountain%20for%20children&image_size=portrait_4_3' },
-    { character: '石', pinyin: 'shí', image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20stone%20for%20children&image_size=portrait_4_3' }
-  ]
 
   // 从API获取游戏数据
   useEffect(() => {
@@ -116,11 +105,7 @@ const MemoryGame: React.FC = () => {
     
     // 如果从API获取到了数据，转换为游戏数据格式
     if (flashcards.length > 0) {
-      gameDataToUse = flashcards.map(card => ({
-        character: card.character,
-        pinyin: card.pinyin,
-        image: card.imageUrl
-      })).filter(item => item.character && item.pinyin)
+      gameDataToUse = flashcards.filter(item => item.character && item.pinyin)
       
       // 如果转换后没有有效数据，使用默认数据
       if (gameDataToUse.length === 0) {
@@ -131,8 +116,10 @@ const MemoryGame: React.FC = () => {
     // 随机选择6个汉字
     const shuffledData = [...gameDataToUse].sort(() => Math.random() - 0.5)
     const selectedData = shuffledData.slice(0, 6).map((item, index) => ({
-      ...item,
-      id: index
+      id: index,
+      character: item.character,
+      pinyin: item.pinyin,
+      imageUrl: item.imageUrl
     }))
     setCards(selectedData)
 
@@ -290,7 +277,7 @@ const MemoryGame: React.FC = () => {
                     <div className="text-5xl font-bold text-primary mb-4">{card.character}</div>
                     <div className="text-xl font-medium text-gray-600 mb-2">{card.pinyin}</div>
                     <img 
-                      src={card.image} 
+                      src={card.imageUrl} 
                       alt={card.character} 
                       className="w-full h-32 object-cover rounded-lg"
                     />
@@ -312,7 +299,7 @@ const MemoryGame: React.FC = () => {
                   {questions[currentQuestion].type === 'image' && (
                     <div className="mb-6">
                       <img 
-                        src={cards.find(c => c.character === questions[currentQuestion].correctAnswer)?.image}
+                        src={cards.find(c => c.character === questions[currentQuestion].correctAnswer)?.imageUrl}
                         alt="问题图片"
                         className="w-full h-48 object-cover rounded-lg"
                       />

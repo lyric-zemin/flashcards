@@ -6,6 +6,7 @@ import { saveGamePoints } from '../../utils/points'
 import { getAllFlashcards } from '../../utils/api'
 import type { Flashcard } from '../../utils/api'
 import { shuffleArray } from '../../utils/gameUtils'
+import { defaultGameData } from '../../utils/gameConfig'
 
 interface Card {
   id: number
@@ -38,7 +39,7 @@ const MatchingGame: React.FC = () => {
     return flashcards.map(card => ({
       character: card.character,
       pinyin: card.pinyin,
-      image: card.imageUrl
+      imageUrl: card.imageUrl
     }))
   }, [flashcards])
 
@@ -54,13 +55,7 @@ const MatchingGame: React.FC = () => {
     } catch (error) {
       console.error('获取flashcard数据失败:', error)
       // 使用默认数据作为备用
-      setFlashcards([
-        { id: 1, character: '人', pinyin: 'rén', imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20person%20for%20children&image_size=portrait_4_3', meaning: 'person', audioUrl: '', ageGroupId: 1 },
-        { id: 2, character: '口', pinyin: 'kǒu', imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20mouth%20for%20children&image_size=portrait_4_3', meaning: 'mouth', audioUrl: '', ageGroupId: 1 },
-        { id: 3, character: '日', pinyin: 'rì', imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20sun%20for%20children&image_size=portrait_4_3', meaning: 'sun', audioUrl: '', ageGroupId: 1 },
-        { id: 4, character: '月', pinyin: 'yuè', imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20moon%20for%20children&image_size=portrait_4_3', meaning: 'moon', audioUrl: '', ageGroupId: 1 },
-        { id: 5, character: '水', pinyin: 'shuǐ', imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20water%20for%20children&image_size=portrait_4_3', meaning: 'water', audioUrl: '', ageGroupId: 1 }
-      ])
+      setFlashcards(defaultGameData)
     } finally {
       setLoading(false)
     }
@@ -120,7 +115,7 @@ const MatchingGame: React.FC = () => {
       // 创建图片卡片
       newCards.push({
         id: id++,
-        content: item.image,
+        content: item.imageUrl,
         type: 'image',
         matchId: index,
         isFlipped: false,

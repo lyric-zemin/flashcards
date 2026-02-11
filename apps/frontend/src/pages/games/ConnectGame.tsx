@@ -5,7 +5,8 @@ import GameResult from '../../components/game/GameResult'
 import { saveGamePoints } from '../../utils/points'
 import { getAllFlashcards } from '../../utils/api'
 import type { Flashcard } from '../../utils/api'
-import { shuffleArray } from '../../utils/gameUtils'
+import { getRandomElements, shuffleArray } from '../../utils/gameUtils'
+import { defaultGameData, DEFAULT_IMAGE_URL } from '../../utils/gameConfig'
 
 interface ConnectCard {
   id: number
@@ -14,6 +15,7 @@ interface ConnectCard {
   image: string
   isFlipped: boolean
   isMatched: boolean
+  showCharacter: boolean // 固定显示类型，true显示汉字，false显示图片
 }
 
 /**
@@ -32,20 +34,6 @@ const ConnectGame: React.FC = () => {
   const [flashcards, setFlashcards] = useState<Flashcard[]>([])
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
-
-  // 默认游戏数据（当API调用失败时使用）
-  const defaultGameData = [
-    { character: '人', pinyin: 'rén', image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20person%20for%20children&image_size=portrait_4_3' },
-    { character: '口', pinyin: 'kǒu', image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20mouth%20for%20children&image_size=portrait_4_3' },
-    { character: '日', pinyin: 'rì', image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20sun%20for%20children&image_size=portrait_4_3' },
-    { character: '月', pinyin: 'yuè', image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20moon%20for%20children&image_size=portrait_4_3' },
-    { character: '水', pinyin: 'shuǐ', image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20water%20for%20children&image_size=portrait_4_3' },
-    { character: '火', pinyin: 'huǒ', image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20fire%20for%20children&image_size=portrait_4_3' },
-    { character: '山', pinyin: 'shān', image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20mountain%20for%20children&image_size=portrait_4_3' },
-    { character: '石', pinyin: 'shí', image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20stone%20for%20children&image_size=portrait_4_3' },
-    { character: '木', pinyin: 'mù', image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20tree%20for%20children&image_size=portrait_4_3' },
-    { character: '金', pinyin: 'jīn', image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20gold%20for%20children&image_size=portrait_4_3' }
-  ]
 
   // 从API获取游戏数据
   useEffect(() => {
@@ -88,11 +76,7 @@ const ConnectGame: React.FC = () => {
     
     // 如果从API获取到了数据，转换为游戏数据格式
     if (flashcards.length > 0) {
-      gameDataToUse = flashcards.map(card => ({
-        character: card.character,
-        pinyin: card.pinyin,
-        image: card.imageUrl
-      })).filter(item => item.character && item.pinyin)
+      gameDataToUse = flashcards.filter(item => item.character && item.pinyin)
       
       // 如果转换后没有有效数据，使用默认数据
       if (gameDataToUse.length === 0) {
@@ -105,25 +89,30 @@ const ConnectGame: React.FC = () => {
     let id = 0
 
     // 为每个汉字创建两张卡片
-    gameDataToUse.forEach((item) => {
-      // 创建第一张卡片（显示汉字）
+    getRandomElements(gameDataToUse, 6).forEach((item) => {
+      // 为每张卡片设置固定的显示类型
+      const showCharacter1 = Math.random() > 0.5
+      
+      // 创建第一张卡片
       newCards.push({
         id: id++,
         character: item.character,
         pinyin: item.pinyin,
-        image: item.image || 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20chinese%20character%20for%20children&image_size=portrait_4_3',
+        image: item.imageUrl || DEFAULT_IMAGE_URL,
         isFlipped: false,
-        isMatched: false
+        isMatched: false,
+        showCharacter: showCharacter1
       })
 
-      // 创建第二张卡片（显示拼音或图片）
+      // 创建第二张卡片，显示类型与第一张相同
       newCards.push({
         id: id++,
         character: item.character,
         pinyin: item.pinyin,
-        image: item.image || 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20chinese%20character%20for%20children&image_size=portrait_4_3',
+        image: item.imageUrl || DEFAULT_IMAGE_URL,
         isFlipped: false,
-        isMatched: false
+        isMatched: false,
+        showCharacter: showCharacter1
       })
     })
 
@@ -284,11 +273,11 @@ const ConnectGame: React.FC = () => {
                       <div className={`absolute inset-0 bg-white rounded-lg shadow-md flex items-center justify-center backface-hidden ${
                         card.isFlipped ? 'opacity-100' : 'opacity-0'
                       }`}>
-                        {Math.random() > 0.5 ? (
+                        {card.showCharacter ? (
                           <div className="text-4xl font-bold text-primary">{card.character}</div>
                         ) : (
                           <div className="text-center">
-                            <div className="text-2xl font-bold text-primary mb-2">{card.pinyin}</div>
+                            {/* <div className="text-2xl font-bold text-primary mb-2">{card.pinyin}</div> */}
                             <img 
                               src={card.image} 
                               alt={card.character} 
