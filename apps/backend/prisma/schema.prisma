@@ -1,0 +1,120 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model AgeGroup {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  level Int
+  
+  flashcards Flashcard[]
+}
+
+model Flashcard {
+  id        Int      @id @default(autoincrement())
+  character String
+  pinyin    String
+  meaning   String
+  imageUrl  String
+  audioUrl  String
+  ageGroupId Int
+  
+  ageGroup AgeGroup @relation(fields: [ageGroupId], references: [id])
+  userProgress UserProgress[]
+  
+  @@unique([character, ageGroupId], name: "character_ageGroupId")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  nickname  String
+  password  String
+  avatar    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  userProgress UserProgress[]
+  userAchievements UserAchievement[]
+  userBadges UserBadge[]
+  pointRecords PointRecord[]
+  signIns SignIn[]
+}
+
+model UserProgress {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  flashcardId Int
+  isLearned   Boolean  @default(false)
+  learnedAt   DateTime?
+  
+  user     User     @relation(fields: [userId], references: [id])
+  flashcard Flashcard @relation(fields: [flashcardId], references: [id])
+}
+
+model Achievement {
+  id          Int    @id @default(autoincrement())
+  name        String @unique
+  description String
+  icon        String
+  requiredPoints Int
+  
+  userAchievements UserAchievement[]
+}
+
+model UserAchievement {
+  id            Int       @id @default(autoincrement())
+  userId        Int
+  achievementId Int
+  achievedAt    DateTime  @default(now())
+  
+  user        User        @relation(fields: [userId], references: [id])
+  achievement Achievement @relation(fields: [achievementId], references: [id])
+}
+
+model Badge {
+  id          Int    @id @default(autoincrement())
+  name        String @unique
+  description String
+  icon        String
+  condition   String
+  
+  userBadges UserBadge[]
+}
+
+model UserBadge {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  badgeId   Int
+  obtainedAt DateTime @default(now())
+  
+  user  User  @relation(fields: [userId], references: [id])
+  badge Badge @relation(fields: [badgeId], references: [id])
+}
+
+model PointRecord {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  points    Int
+  type      String
+  description String
+  createdAt DateTime @default(now())
+  
+  user User @relation(fields: [userId], references: [id])
+}
+
+model SignIn {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  signInDate DateTime @default(now())
+  
+  user User @relation(fields: [userId], references: [id])
+}
