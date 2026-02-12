@@ -14,10 +14,14 @@ const prisma = new PrismaClient()
  */
 export async function getUserPoints(req: Request, res: Response) {
   try {
-    const { userId } = req.params
+    const { userId } = req
+
+    if (!userId) {
+      return res.status(401).json({ error: '用户未登录' })
+    }
 
     const records = await prisma.pointRecord.findMany({
-      where: { userId: parseInt(userId) },
+      where: { userId },
       orderBy: { createdAt: 'desc' }
     })
 
@@ -38,8 +42,12 @@ export async function getUserPoints(req: Request, res: Response) {
  */
 export async function addUserPoints(req: Request, res: Response) {
   try {
-    const { userId } = req.params
+    const { userId } = req
     const { points, type, description } = req.body
+
+    if (!userId) {
+      return res.status(401).json({ error: '用户未登录' })
+    }
 
     if (!points || !type) {
       return res.status(400).json({ error: '积分数量和类型不能为空' })
@@ -47,7 +55,7 @@ export async function addUserPoints(req: Request, res: Response) {
 
     const record = await prisma.pointRecord.create({
       data: {
-        userId: parseInt(userId),
+        userId,
         points,
         type,
         description
@@ -55,7 +63,7 @@ export async function addUserPoints(req: Request, res: Response) {
     })
 
     // 检查是否达成成就
-    await checkAchievements(parseInt(userId))
+    await checkAchievements(userId)
 
     res.json(record)
   } catch (error) {
@@ -71,7 +79,11 @@ export async function addUserPoints(req: Request, res: Response) {
  */
 export async function userSignIn(req: Request, res: Response) {
   try {
-    const { userId } = req.params
+    const { userId } = req
+
+    if (!userId) {
+      return res.status(401).json({ error: '用户未登录' })
+    }
 
     // 检查今天是否已经签到
     const today = new Date()
@@ -82,7 +94,7 @@ export async function userSignIn(req: Request, res: Response) {
 
     const existingSignIn = await prisma.signIn.findFirst({
       where: {
-        userId: parseInt(userId),
+        userId,
         signInDate: {
           gte: today,
           lt: tomorrow
@@ -100,7 +112,7 @@ export async function userSignIn(req: Request, res: Response) {
 
     const yesterdaySignIn = await prisma.signIn.findFirst({
       where: {
-        userId: parseInt(userId),
+        userId,
         signInDate: {
           gte: yesterday,
           lt: today
@@ -112,7 +124,7 @@ export async function userSignIn(req: Request, res: Response) {
     if (yesterdaySignIn) {
       // 查询最近的签到记录，计算连续天数
       const signIns = await prisma.signIn.findMany({
-        where: { userId: parseInt(userId) },
+        where: { userId },
         orderBy: { signInDate: 'desc' }
       })
 
@@ -137,7 +149,7 @@ export async function userSignIn(req: Request, res: Response) {
     // 创建签到记录
     const signIn = await prisma.signIn.create({
       data: {
-        userId: parseInt(userId),
+        userId,
         signInDate: new Date()
       }
     })
@@ -152,7 +164,7 @@ export async function userSignIn(req: Request, res: Response) {
 
     await prisma.pointRecord.create({
       data: {
-        userId: parseInt(userId),
+        userId,
         points: signInPoints,
         type: 'sign_in',
         description: `签到奖励${consecutiveDays}天`
@@ -160,7 +172,7 @@ export async function userSignIn(req: Request, res: Response) {
     })
 
     // 检查是否达成成就
-    await checkAchievements(parseInt(userId))
+    await checkAchievements(userId)
 
     res.json({ signIn, consecutiveDays, signInPoints })
   } catch (error) {

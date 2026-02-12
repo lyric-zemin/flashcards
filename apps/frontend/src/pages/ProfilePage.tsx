@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
 import { animateNumber } from '../components/animations'
-import { type User, type UserPoints, type UserAchievement, type UserBadge, getUserInfo, getUserPoints, getUserAchievements, getUserBadges, userSignIn } from '../utils/api'
+import { type User, type UserPoints, type UserAchievement, type UserBadge, getUserInfo, getUserPoints, getUserAchievements, getUserBadges, userSignIn, getUserId } from '../utils/api'
 
 /**
  * 个人中心页面
@@ -25,9 +25,7 @@ const ProfilePage: React.FC = () => {
     }
   }, [navigate])
 
-  // 从localStorage获取用户信息
-  const storedUser = localStorage.getItem('user')
-  const userId = storedUser ? JSON.parse(storedUser).id : 1 // 默认为1，实际项目中应该从localStorage获取
+  const userId = getUserId()
 
   /**
    * 获取用户信息
@@ -36,19 +34,19 @@ const ProfilePage: React.FC = () => {
     const fetchUserData = async () => {
       try {
         // 获取用户信息
-        const userData = await getUserInfo(userId)
+        const userData = await getUserInfo()
         setUser(userData)
 
         // 获取用户积分
-        const pointsData = await getUserPoints(userId)
+        const pointsData = await getUserPoints()
         setPoints(pointsData)
 
         // 获取用户成就
-        const achievementsData = await getUserAchievements(userId)
+        const achievementsData = await getUserAchievements()
         setAchievements(achievementsData)
 
         // 获取用户徽章
-        const badgesData = await getUserBadges(userId)
+        const badgesData = await getUserBadges()
         setBadges(badgesData)
       } catch (error) {
         console.error('获取用户数据失败:', error)
@@ -73,10 +71,10 @@ const ProfilePage: React.FC = () => {
   const handleSignIn = async () => {
     try {
       setIsSigningIn(true)
-      const response = await userSignIn(userId)
+      const response = await userSignIn()
       
       // 更新积分
-      const pointsData = await getUserPoints(userId)
+      const pointsData = await getUserPoints()
       setPoints(pointsData)
 
       alert(`签到成功！获得 ${response.signInPoints} 积分，连续签到 ${response.consecutiveDays} 天`)

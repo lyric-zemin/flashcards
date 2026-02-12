@@ -16,7 +16,7 @@ export const getUserPoints = async (): Promise<number> => {
   }
 
   try {
-    const response = await fetchUserPoints(userId)
+    const response = await fetchUserPoints()
     return response.totalPoints || 0
   } catch (error) {
     console.error('获取用户积分失败:', error)
@@ -38,7 +38,7 @@ export const addUserPoints = async (points: number, type: string, description: s
   }
 
   try {
-    await addPoints(userId, points, type, description)
+    await addPoints(points, type, description)
     return true
   } catch (error) {
     console.error('增加用户积分失败:', error)

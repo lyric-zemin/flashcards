@@ -4,6 +4,7 @@ import flashcardRoutes from './routes/flashcardRoutes'
 import gamificationRoutes from './routes/gamificationRoutes'
 import authRoutes from './routes/authRoutes'
 import userRoutes from './routes/userRoutes'
+import { userIdMiddleware } from './middleware/userIdMiddleware'
 
 const app = express()
 const PORT = process.env.PORT || 3001
@@ -11,6 +12,7 @@ const PORT = process.env.PORT || 3001
 // 中间件
 app.use(cors())
 app.use(express.json())
+app.use(userIdMiddleware)
 
 // 路由
 app.use('/api', flashcardRoutes)

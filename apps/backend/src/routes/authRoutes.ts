@@ -2,8 +2,7 @@ import express from 'express'
 import {
   register,
   login,
-  logout,
-  getCurrentUser
+  logout
 } from '../controllers/authController'
 
 const router = express.Router()
@@ -16,8 +15,5 @@ router.post('/login', login)
 
 // 登出路由
 router.post('/logout', logout)
-
-// 获取当前用户信息路由
-router.get('/user/:userId', getCurrentUser)
 
 export default router

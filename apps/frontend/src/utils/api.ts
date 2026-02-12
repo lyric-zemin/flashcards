@@ -138,6 +138,11 @@ export const getUserId = (): number | null => {
 // 请求拦截器
 api.interceptors.request.use(
   config => {
+    // 添加用户ID到请求头
+    const userId = getUserId()
+    if (userId) {
+      config.headers['X-User-Id'] = userId.toString()
+    }
     // 可以在这里添加认证token等
     return config
   },
@@ -190,24 +195,22 @@ api.interceptors.response.use(
 
 /**
  * 获取用户积分
- * @param userId 用户ID
  * @returns 用户积分和积分记录
  */
-export const getUserPoints = async (userId: number): Promise<UserPoints> => {
-  const response = await api.get(`/gamification/users/${userId}/points`)
+export const getUserPoints = async (): Promise<UserPoints> => {
+  const response = await api.get('/gamification/points')
   return response.data
 }
 
 /**
  * 增加用户积分
- * @param userId 用户ID
  * @param points 增加的积分
  * @param type 积分类型
  * @param description 积分描述
  * @returns 操作结果
  */
-export const addUserPoints = async (userId: number, points: number, type: string, description: string): Promise<AddPointsResult> => {
-  const response = await api.post(`/gamification/users/${userId}/points`, {
+export const addUserPoints = async (points: number, type: string, description: string): Promise<AddPointsResult> => {
+  const response = await api.post('/gamification/points', {
     points,
     type,
     description
@@ -217,11 +220,10 @@ export const addUserPoints = async (userId: number, points: number, type: string
 
 /**
  * 用户签到
- * @param userId 用户ID
  * @returns 签到结果
  */
-export const userSignIn = async (userId: number): Promise<SignInResult> => {
-  const response = await api.post(`/gamification/users/${userId}/signin`)
+export const userSignIn = async (): Promise<SignInResult> => {
+  const response = await api.post('/gamification/signin')
   return response.data
 }
 
@@ -230,9 +232,7 @@ export const userSignIn = async (userId: number): Promise<SignInResult> => {
  * @returns 年龄段列表（如果用户已登录，返回带学习进度的年龄段列表）
  */
 export const getAgeGroups = async (): Promise<AgeGroup[]> => {
-  const userId = getUserId()
-  const params = userId ? { userId } : {}
-  const response = await api.get('/age-groups', { params })
+  const response = await api.get('/age-groups')
   return response.data
 }
 
@@ -242,9 +242,7 @@ export const getAgeGroups = async (): Promise<AgeGroup[]> => {
  * @returns 汉字卡片列表（如果用户已登录，返回带学习状态的卡片列表）
  */
 export const getFlashcardsByAgeGroup = async (ageGroupId: number): Promise<Flashcard[]> => {
-  const userId = getUserId()
-  const params = userId ? { userId } : {}
-  const response = await api.get(`/flashcards/${ageGroupId}`, { params })
+  const response = await api.get(`/flashcards/${ageGroupId}`)
   return response.data
 }
 
@@ -263,21 +261,18 @@ export const getAllFlashcards = async (): Promise<Flashcard[]> => {
  * @returns 汉字卡片详情（如果用户已登录，返回带学习状态的卡片详情）
  */
 export const getFlashcardById = async (id: number): Promise<Flashcard> => {
-  const userId = getUserId()
-  const params = userId ? { userId } : {}
-  const response = await api.get(`/flashcard/${id}`, { params })
+  const response = await api.get(`/flashcard/${id}`)
   return response.data
 }
 
 /**
  * 更新学习进度
- * @param userId 用户ID
  * @param flashcardId 卡片ID
  * @param isLearned 是否已学习
  * @returns 更新结果
  */
-export const updateLearningProgress = async (userId: number, flashcardId: number, isLearned: boolean): Promise<unknown> => {
-  const response = await api.put(`/users/${userId}/progress/${flashcardId}`, { isLearned })
+export const updateLearningProgress = async (flashcardId: number, isLearned: boolean): Promise<unknown> => {
+  const response = await api.put(`/users/progress/${flashcardId}`, { isLearned })
   return response.data
 }
 
@@ -313,31 +308,28 @@ export const register = async (username: string, nickname: string, password: str
 
 /**
  * 获取用户信息
- * @param userId 用户ID
  * @returns 用户信息
  */
-export const getUserInfo = async (userId: number): Promise<User> => {
-  const response = await api.get(`/users/${userId}`)
+export const getUserInfo = async (): Promise<User> => {
+  const response = await api.get('/users/info')
   return response.data
 }
 
 /**
  * 获取用户成就
- * @param userId 用户ID
  * @returns 用户成就列表
  */
-export const getUserAchievements = async (userId: number): Promise<UserAchievement[]> => {
-  const response = await api.get(`/gamification/users/${userId}/achievements`)
+export const getUserAchievements = async (): Promise<UserAchievement[]> => {
+  const response = await api.get('/gamification/users/achievements')
   return response.data
 }
 
 /**
  * 获取用户徽章
- * @param userId 用户ID
  * @returns 用户徽章列表
  */
-export const getUserBadges = async (userId: number): Promise<UserBadge[]> => {
-  const response = await api.get(`/gamification/users/${userId}/badges`)
+export const getUserBadges = async (): Promise<UserBadge[]> => {
+  const response = await api.get('/gamification/users/badges')
   return response.data
 }
 

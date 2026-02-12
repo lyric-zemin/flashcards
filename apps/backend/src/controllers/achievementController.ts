@@ -29,10 +29,14 @@ export async function getAllAchievements(_req: Request, res: Response) {
  */
 export async function getUserAchievements(req: Request, res: Response) {
   try {
-    const { userId } = req.params
+    const { userId } = req
+
+    if (!userId) {
+      return res.status(401).json({ error: '用户未登录' })
+    }
 
     const userAchievements = await prisma.userAchievement.findMany({
-      where: { userId: parseInt(userId) },
+      where: { userId },
       include: {
         achievement: true
       },
@@ -68,10 +72,14 @@ export async function getAllBadges(_req: Request, res: Response) {
  */
 export async function getUserBadges(req: Request, res: Response) {
   try {
-    const { userId } = req.params
+    const { userId } = req
+
+    if (!userId) {
+      return res.status(401).json({ error: '用户未登录' })
+    }
 
     const userBadges = await prisma.userBadge.findMany({
-      where: { userId: parseInt(userId) },
+      where: { userId },
       include: {
         badge: true
       },
@@ -92,12 +100,17 @@ export async function getUserBadges(req: Request, res: Response) {
  */
 export async function grantUserBadge(req: Request, res: Response) {
   try {
-    const { userId, badgeId } = req.params
+    const { userId } = req
+    const { badgeId } = req.params
+
+    if (!userId) {
+      return res.status(401).json({ error: '用户未登录' })
+    }
 
     // 检查用户是否已经拥有该徽章
     const existingBadge = await prisma.userBadge.findFirst({
       where: {
-        userId: parseInt(userId),
+        userId,
         badgeId: parseInt(badgeId)
       }
     })
@@ -108,7 +121,7 @@ export async function grantUserBadge(req: Request, res: Response) {
 
     const userBadge = await prisma.userBadge.create({
       data: {
-        userId: parseInt(userId),
+        userId,
         badgeId: parseInt(badgeId)
       },
       include: {

@@ -56,10 +56,14 @@ export async function createOrGetUser(req: Request, res: Response) {
  */
 export async function getUserInfo(req: Request, res: Response) {
   try {
-    const { userId } = req.params
+    const { userId } = req
+
+    if (!userId) {
+      return res.status(401).json({ error: '用户未登录' })
+    }
 
     const user = await prisma.user.findUnique({
-      where: { id: parseInt(userId) }
+      where: { id: userId }
     })
 
     if (!user) {
@@ -80,11 +84,15 @@ export async function getUserInfo(req: Request, res: Response) {
  */
 export async function updateUserInfo(req: Request, res: Response) {
   try {
-    const { userId } = req.params
+    const { userId } = req
     const { nickname, avatar } = req.body
 
+    if (!userId) {
+      return res.status(401).json({ error: '用户未登录' })
+    }
+
     const user = await prisma.user.update({
-      where: { id: parseInt(userId) },
+      where: { id: userId },
       data: {
         nickname,
         avatar
@@ -105,10 +113,14 @@ export async function updateUserInfo(req: Request, res: Response) {
  */
 export async function getUserProgress(req: Request, res: Response) {
   try {
-    const { userId } = req.params
+    const { userId } = req
+
+    if (!userId) {
+      return res.status(401).json({ error: '用户未登录' })
+    }
 
     const progress = await prisma.userProgress.findMany({
-      where: { userId: parseInt(userId) },
+      where: { userId },
       include: {
         flashcard: {
           include: {
@@ -132,13 +144,18 @@ export async function getUserProgress(req: Request, res: Response) {
  */
 export async function updateLearningProgress(req: Request, res: Response) {
   try {
-    const { userId, flashcardId } = req.params
+    const { userId } = req
+    const { flashcardId } = req.params
     const { isLearned } = req.body
+
+    if (!userId) {
+      return res.status(401).json({ error: '用户未登录' })
+    }
 
     // 查找是否已有进度记录
     let progress = await prisma.userProgress.findFirst({
       where: {
-        userId: parseInt(userId),
+        userId,
         flashcardId: parseInt(flashcardId)
       }
     })
@@ -156,7 +173,7 @@ export async function updateLearningProgress(req: Request, res: Response) {
       // 创建新进度记录
       progress = await prisma.userProgress.create({
         data: {
-          userId: parseInt(userId),
+          userId,
           flashcardId: parseInt(flashcardId),
           isLearned,
           learnedAt: isLearned ? new Date() : null
@@ -178,10 +195,14 @@ export async function updateLearningProgress(req: Request, res: Response) {
  */
 export async function getProgressByAgeGroup(req: Request, res: Response) {
   try {
-    const { userId } = req.params
+    const { userId } = req
+
+    if (!userId) {
+      return res.status(401).json({ error: '用户未登录' })
+    }
 
     const progress = await prisma.userProgress.findMany({
-      where: { userId: parseInt(userId) },
+      where: { userId },
       include: {
         flashcard: {
           include: {
@@ -215,7 +236,11 @@ export async function getProgressByAgeGroup(req: Request, res: Response) {
  */
 export async function getProgressStatistics(req: Request, res: Response) {
   try {
-    const { userId } = req.params
+    const { userId } = req
+
+    if (!userId) {
+      return res.status(401).json({ error: '用户未登录' })
+    }
 
     // 获取所有卡片数量
     const totalFlashcards = await prisma.flashcard.count()
@@ -223,7 +248,7 @@ export async function getProgressStatistics(req: Request, res: Response) {
     // 获取已学习卡片数量
     const learnedFlashcards = await prisma.userProgress.count({
       where: {
-        userId: parseInt(userId),
+        userId,
         isLearned: true
       }
     })
@@ -240,7 +265,7 @@ export async function getProgressStatistics(req: Request, res: Response) {
         const ageGroupFlashcards = ageGroup.flashcards.length
         const learnedInAgeGroup = await prisma.userProgress.count({
           where: {
-            userId: parseInt(userId),
+            userId,
             isLearned: true,
             flashcard: {
               ageGroupId: ageGroup.id

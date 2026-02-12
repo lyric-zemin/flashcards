@@ -11,21 +11,21 @@ import {
 const router = express.Router()
 
 // 获取用户信息
-router.get('/:userId', getUserInfo)
+router.get('/info', getUserInfo)
 
 // 更新用户信息
-router.put('/:userId', updateUserInfo)
+router.put('/info', updateUserInfo)
 
 // 获取用户学习进度
-router.get('/:userId/progress', getUserProgress)
+router.get('/progress', getUserProgress)
 
 // 按年龄组获取学习进度
-router.get('/:userId/progress/age-group', getProgressByAgeGroup)
+router.get('/progress/age-group', getProgressByAgeGroup)
 
 // 获取学习进度统计
-router.get('/:userId/progress/statistics', getProgressStatistics)
+router.get('/progress/statistics', getProgressStatistics)
 
 // 更新学习进度
-router.put('/:userId/progress/:flashcardId', updateLearningProgress)
+router.put('/progress/:flashcardId', updateLearningProgress)
 
 export default router

@@ -105,30 +105,3 @@ export async function logout(_req: Request, res: Response) {
     res.status(500).json({ error: '登出失败' })
   }
 }
-
-/**
- * 获取当前用户信息
- * @param req 请求对象
- * @param res 响应对象
- */
-export async function getCurrentUser(req: Request, res: Response) {
-  try {
-    const { userId } = req.params
-
-    const user = await prisma.user.findUnique({
-      where: { id: parseInt(userId) }
-    })
-
-    if (!user) {
-      return res.status(404).json({ error: '用户不存在' })
-    }
-
-    // 隐藏密码字段
-    const { password: _, ...userWithoutPassword } = user
-
-    res.json({ user: userWithoutPassword })
-  } catch (error) {
-    console.error('获取用户信息失败:', error)
-    res.status(500).json({ error: '获取用户信息失败' })
-  }
-}

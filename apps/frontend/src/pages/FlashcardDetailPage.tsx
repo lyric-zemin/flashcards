@@ -50,7 +50,7 @@ const FlashcardDetailPage: React.FC = () => {
     setIsUpdating(true)
     try {
       const newIsLearned = !currentCard.isLearned
-      await updateLearningProgress(userId, currentCard.id, newIsLearned)
+      await updateLearningProgress(currentCard.id, newIsLearned)
       setCurrentCard({ ...currentCard, isLearned: newIsLearned })
       
       // 更新所有卡片中的学习状态

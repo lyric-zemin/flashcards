@@ -88,7 +88,7 @@ export async function importFlashcards(req: Request, res: Response) {
  */
 export async function getAgeGroups(req: Request, res: Response) {
   try {
-    const { userId } = req.query
+    const { userId } = req
     const ageGroups = await prisma.ageGroup.findMany({
       orderBy: { level: 'asc' },
       include: {
@@ -103,7 +103,7 @@ export async function getAgeGroups(req: Request, res: Response) {
           const totalCards = ageGroup.flashcards.length
           const learnedCards = await prisma.userProgress.count({
             where: {
-              userId: parseInt(userId as string),
+              userId,
               isLearned: true,
               flashcard: {
                 ageGroupId: ageGroup.id
@@ -157,7 +157,7 @@ export async function getAllFlashcards(_req: Request, res: Response) {
 export async function getFlashcardsByAgeGroup(req: Request, res: Response) {
   try {
     const { ageGroupId } = req.params
-    const { userId } = req.query
+    const { userId } = req
     const flashcards = await prisma.flashcard.findMany({
       where: { ageGroupId: parseInt(ageGroupId) },
       include: { ageGroup: true }
@@ -167,7 +167,7 @@ export async function getFlashcardsByAgeGroup(req: Request, res: Response) {
     if (userId) {
       const learnedFlashcardIds = await prisma.userProgress.findMany({
         where: {
-          userId: parseInt(userId as string),
+          userId,
           isLearned: true,
           flashcard: {
             ageGroupId: parseInt(ageGroupId)
@@ -203,7 +203,7 @@ export async function getFlashcardsByAgeGroup(req: Request, res: Response) {
 export async function getFlashcardById(req: Request, res: Response) {
   try {
     const { id } = req.params
-    const { userId } = req.query
+    const { userId } = req
     const flashcard = await prisma.flashcard.findUnique({
       where: { id: parseInt(id) },
       include: { ageGroup: true }
@@ -214,7 +214,7 @@ export async function getFlashcardById(req: Request, res: Response) {
       if (userId) {
         const progress = await prisma.userProgress.findFirst({
           where: {
-            userId: parseInt(userId as string),
+            userId,
             flashcardId: parseInt(id)
           }
         })
