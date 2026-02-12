@@ -1,17 +1,35 @@
 import axios from 'axios'
 import qs from 'querystring'
+import fs from 'fs'
+import path from 'path'
 
 /**
  * 百度语音合成API配置
  */
-const BAIDU_API_KEY = 'your_api_key' // 替换为你的百度API Key
-const BAIDU_SECRET_KEY = 'your_secret_key' // 替换为你的百度Secret Key
+// const BAIDU_APP_ID = '7437668' // 替换为你的百度AppID
+const BAIDU_API_KEY = 'H74ivkHtbsqvwo66h9jR4Vd4' // 替换为你的百度API Key
+const BAIDU_SECRET_KEY = 'd7jpepg40BI6zg6sayW0d2domw8CKDq6' // 替换为你的百度Secret Key
+
+/**
+ * Token缓存
+ */
+interface TokenCache {
+  token: string
+  expireTime: number
+}
+
+let tokenCache: TokenCache | null = null
 
 /**
  * 获取百度语音合成token
  * @returns token
  */
 async function getBaiduToken() {
+  // 检查缓存是否有效
+  if (tokenCache && Date.now() < tokenCache.expireTime) {
+    return tokenCache.token
+  }
+
   try {
     const response = await axios.get(
       'https://aip.baidubce.com/oauth/2.0/token',
@@ -23,7 +41,18 @@ async function getBaiduToken() {
         }
       }
     )
-    return response.data.access_token
+
+    const token = response.data.access_token
+    const expiresIn = response.data.expires_in || 2592000 // 默认30天
+    const expireTime = Date.now() + (expiresIn * 1000)
+
+    // 更新缓存
+    tokenCache = {
+      token,
+      expireTime
+    }
+
+    return token
   } catch (error) {
     console.error('获取百度语音token失败:', error)
     return null
@@ -31,15 +60,36 @@ async function getBaiduToken() {
 }
 
 /**
+ * 确保音频存储目录存在
+ */
+function ensureAudioDirectoryExists() {
+  const audioDir = path.join(__dirname, '..', '..', 'public', 'audio')
+  if (!fs.existsSync(audioDir)) {
+    fs.mkdirSync(audioDir, { recursive: true })
+  }
+  return audioDir
+}
+
+/**
  * 生成汉字音频URL
  * @param character 汉字
- * @param pinyin 拼音
  * @returns 音频URL
  */
 export async function generateAudioUrl(character: string) {
   try {
-    // 这里使用模拟的音频URL，实际项目中需要集成真实的TTS服务
-    // 例如使用百度语音合成API
+    // 确保音频目录存在
+    const audioDir = ensureAudioDirectoryExists()
+    // 使用汉字的Unicode编码作为文件名，避免URL编码问题
+    const filename = `${character.charCodeAt(0)}.mp3`
+    const audioFilePath = path.join(audioDir, filename)
+    const audioUrl = `/audio/${filename}`
+
+    // 检查音频文件是否已存在
+    if (fs.existsSync(audioFilePath)) {
+      return audioUrl
+    }
+
+    // 获取token
     const token = await getBaiduToken()
     if (token) {
       const audioData = await axios.post(
@@ -52,7 +102,8 @@ export async function generateAudioUrl(character: string) {
           spd: 5,
           pit: 5,
           vol: 15,
-          per: 0
+          per: 0,
+          cuid: 'Flashcards'
         }),
         {
           headers: {
@@ -61,12 +112,16 @@ export async function generateAudioUrl(character: string) {
           responseType: 'arraybuffer'
         }
       )
-      // 保存音频文件并返回URL
-      return audioData.data
+
+      // 保存音频文件
+      fs.writeFileSync(audioFilePath, audioData.data)
+      
+      // 返回音频URL
+      return audioUrl
     }
 
-    // 模拟音频URL，实际项目中需要替换为真实的音频文件URL
-    return `https://example.com/audio/${encodeURIComponent(character)}.mp3`
+    // 如果获取token失败，返回空字符串
+    return ''
   } catch (error) {
     console.error('生成音频URL失败:', error)
     return ''

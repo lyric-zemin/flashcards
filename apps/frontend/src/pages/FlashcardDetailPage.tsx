@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
 import type { Flashcard } from '../utils/api'
@@ -14,7 +14,7 @@ const FlashcardDetailPage: React.FC = () => {
   const [loading, setLoading] = useState(true)
   const [isPlaying, setIsPlaying] = useState(false)
   const [isUpdating, setIsUpdating] = useState(false)
-  // const audioRef = useRef<HTMLAudioElement | null>(null)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
   const navigate = useNavigate()
 
   /**
@@ -68,10 +68,38 @@ const FlashcardDetailPage: React.FC = () => {
    * 处理发音播放
    */
   const handlePlayAudio = () => {
-    // 这里简化处理，实际项目中应该使用真实的音频文件
-    console.log(`播放 ${currentCard?.character} 的发音`)
-    setIsPlaying(true)
-    setTimeout(() => setIsPlaying(false), 1000)
+    if (!currentCard || !currentCard.audioUrl) {
+      console.error('没有音频URL')
+      return
+    }
+
+    try {
+      // 创建或使用现有的Audio元素
+      if (!audioRef.current) {
+        audioRef.current = new Audio()
+        
+        // 监听播放结束
+        audioRef.current.addEventListener('ended', () => {
+          setIsPlaying(false)
+        })
+        
+        // 监听错误
+        audioRef.current.addEventListener('error', (error) => {
+          console.error('音频播放错误:', error)
+          setIsPlaying(false)
+        })
+      }
+
+      // 设置音频源并播放
+      audioRef.current.src = currentCard.audioUrl
+      audioRef.current.play()
+      setIsPlaying(true)
+      
+      console.log(`播放 ${currentCard.character} 的发音: ${currentCard.audioUrl}`)
+    } catch (error) {
+      console.error('播放音频失败:', error)
+      setIsPlaying(false)
+    }
   }
 
   /**

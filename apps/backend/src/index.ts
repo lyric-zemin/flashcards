@@ -1,5 +1,6 @@
 import express from 'express'
 import cors from 'cors'
+import path from 'path'
 import flashcardRoutes from './routes/flashcardRoutes'
 import gamificationRoutes from './routes/gamificationRoutes'
 import authRoutes from './routes/authRoutes'
@@ -21,7 +22,11 @@ app.use('/api/auth', authRoutes)
 app.use('/api/users', userRoutes)
 
 // 静态文件服务
-app.use('/static', express.static('public'))
+const publicDir = path.join(__dirname, '..', 'public')
+const audioDir = path.join(publicDir, 'audio')
+
+app.use('/static', express.static(publicDir))
+app.use('/audio', express.static(audioDir))
 
 // 启动服务器
 app.listen(PORT, () => {
