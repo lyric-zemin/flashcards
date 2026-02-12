@@ -68,6 +68,46 @@ async function initData() {
         audioUrl: '', 
         ageGroupId: ageGroup1!.id 
       },
+      { 
+        character: '火', 
+        pinyin: 'huǒ', 
+        meaning: '火焰', 
+        imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20fire%20for%20children&image_size=portrait_4_3', 
+        audioUrl: '', 
+        ageGroupId: ageGroup1!.id 
+      },
+      { 
+        character: '土', 
+        pinyin: 'tǔ', 
+        meaning: '土地', 
+        imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20soil%20for%20children&image_size=portrait_4_3', 
+        audioUrl: '', 
+        ageGroupId: ageGroup1!.id 
+      },
+      { 
+        character: '天', 
+        pinyin: 'tiān', 
+        meaning: '天空', 
+        imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20sky%20for%20children&image_size=portrait_4_3', 
+        audioUrl: '', 
+        ageGroupId: ageGroup1!.id 
+      },
+      { 
+        character: '地', 
+        pinyin: 'dì', 
+        meaning: '地面', 
+        imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20ground%20for%20children&image_size=portrait_4_3', 
+        audioUrl: '', 
+        ageGroupId: ageGroup1!.id 
+      },
+      { 
+        character: '大', 
+        pinyin: 'dà', 
+        meaning: '大小', 
+        imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20big%20size%20for%20children&image_size=portrait_4_3', 
+        audioUrl: '', 
+        ageGroupId: ageGroup1!.id 
+      },
       // 4-5岁
       { 
         character: '山', 
@@ -109,6 +149,46 @@ async function initData() {
         audioUrl: '', 
         ageGroupId: ageGroup2!.id 
       },
+      { 
+        character: '竹', 
+        pinyin: 'zhú', 
+        meaning: '竹子', 
+        imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20bamboo%20for%20children&image_size=portrait_4_3', 
+        audioUrl: '', 
+        ageGroupId: ageGroup2!.id 
+      },
+      { 
+        character: '花', 
+        pinyin: 'huā', 
+        meaning: '花朵', 
+        imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20flower%20for%20children&image_size=portrait_4_3', 
+        audioUrl: '', 
+        ageGroupId: ageGroup2!.id 
+      },
+      { 
+        character: '草', 
+        pinyin: 'cǎo', 
+        meaning: '草地', 
+        imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20grass%20for%20children&image_size=portrait_4_3', 
+        audioUrl: '', 
+        ageGroupId: ageGroup2!.id 
+      },
+      { 
+        character: '鸟', 
+        pinyin: 'niǎo', 
+        meaning: '鸟类', 
+        imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20bird%20for%20children&image_size=portrait_4_3', 
+        audioUrl: '', 
+        ageGroupId: ageGroup2!.id 
+      },
+      { 
+        character: '虫', 
+        pinyin: 'chóng', 
+        meaning: '虫子', 
+        imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20insect%20for%20children&image_size=portrait_4_3', 
+        audioUrl: '', 
+        ageGroupId: ageGroup2!.id 
+      },
       // 5-6岁
       { 
         character: '上', 
@@ -147,6 +227,70 @@ async function initData() {
         pinyin: 'zhōng', 
         meaning: '中间', 
         imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20center%20mark%20for%20children&image_size=portrait_4_3', 
+        audioUrl: '', 
+        ageGroupId: ageGroup3!.id 
+      },
+      { 
+        character: '前', 
+        pinyin: 'qián', 
+        meaning: '前面', 
+        imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20forward%20arrow%20for%20children&image_size=portrait_4_3', 
+        audioUrl: '', 
+        ageGroupId: ageGroup3!.id 
+      },
+      { 
+        character: '后', 
+        pinyin: 'hòu', 
+        meaning: '后面', 
+        imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20backward%20arrow%20for%20children&image_size=portrait_4_3', 
+        audioUrl: '', 
+        ageGroupId: ageGroup3!.id 
+      },
+      { 
+        character: '多', 
+        pinyin: 'duō', 
+        meaning: '很多', 
+        imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20many%20objects%20for%20children&image_size=portrait_4_3', 
+        audioUrl: '', 
+        ageGroupId: ageGroup3!.id 
+      },
+      { 
+        character: '少', 
+        pinyin: 'shǎo', 
+        meaning: '很少', 
+        imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20few%20objects%20for%20children&image_size=portrait_4_3', 
+        audioUrl: '', 
+        ageGroupId: ageGroup3!.id 
+      },
+      { 
+        character: '高', 
+        pinyin: 'gāo', 
+        meaning: '高大', 
+        imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20tall%20object%20for%20children&image_size=portrait_4_3', 
+        audioUrl: '', 
+        ageGroupId: ageGroup3!.id 
+      },
+      { 
+        character: '矮', 
+        pinyin: 'ǎi', 
+        meaning: '矮小', 
+        imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20short%20object%20for%20children&image_size=portrait_4_3', 
+        audioUrl: '', 
+        ageGroupId: ageGroup3!.id 
+      },
+      { 
+        character: '长', 
+        pinyin: 'cháng', 
+        meaning: '长短', 
+        imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20long%20object%20for%20children&image_size=portrait_4_3', 
+        audioUrl: '', 
+        ageGroupId: ageGroup3!.id 
+      },
+      { 
+        character: '短', 
+        pinyin: 'duǎn', 
+        meaning: '短小', 
+        imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20cartoon%20short%20object%20for%20children&image_size=portrait_4_3', 
         audioUrl: '', 
         ageGroupId: ageGroup3!.id 
       }

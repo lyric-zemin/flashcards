@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
 import type { Flashcard } from '../utils/api'
-import { getFlashcardById, getFlashcardsByAgeGroup } from '../utils/api'
+import { getFlashcardById, getFlashcardsByAgeGroup, updateLearningProgress, getUserId } from '../utils/api'
 
 /**
  * 文字详情页组件
@@ -13,6 +13,7 @@ const FlashcardDetailPage: React.FC = () => {
   const [allCards, setAllCards] = useState<Flashcard[]>([])
   const [loading, setLoading] = useState(true)
   const [isPlaying, setIsPlaying] = useState(false)
+  const [isUpdating, setIsUpdating] = useState(false)
   // const audioRef = useRef<HTMLAudioElement | null>(null)
   const navigate = useNavigate()
 
@@ -38,6 +39,30 @@ const FlashcardDetailPage: React.FC = () => {
 
     fetchData()
   }, [id])
+
+  /**
+   * 切换学习状态
+   */
+  const handleToggleLearned = async () => {
+    const userId = getUserId()
+    if (!userId || !currentCard) return
+
+    setIsUpdating(true)
+    try {
+      const newIsLearned = !currentCard.isLearned
+      await updateLearningProgress(userId, currentCard.id, newIsLearned)
+      setCurrentCard({ ...currentCard, isLearned: newIsLearned })
+      
+      // 更新所有卡片中的学习状态
+      setAllCards(allCards.map(card => 
+        card.id === currentCard.id ? { ...card, isLearned: newIsLearned } : card
+      ))
+    } catch (error) {
+      console.error('更新学习状态失败:', error)
+    } finally {
+      setIsUpdating(false)
+    }
+  }
 
   /**
    * 处理发音播放
@@ -134,14 +159,29 @@ const FlashcardDetailPage: React.FC = () => {
                     <h2 className="text-6xl font-bold text-primary">{currentCard.character}</h2>
                     <p className="text-2xl text-gray-500 mt-2">{currentCard.pinyin}</p>
                   </div>
-                  <button 
-                    className={`bg-secondary text-white w-16 h-16 rounded-full flex items-center justify-center text-2xl hover:bg-opacity-90 transition-all duration-300 ${isPlaying ? 'animate-pulse' : ''}`}
-                    onClick={handlePlayAudio}
-                  >
-                    🔊
-                  </button>
+                  <div className="flex space-x-4">
+                    <button 
+                      className={`bg-secondary text-white w-16 h-16 rounded-full flex items-center justify-center text-2xl hover:bg-opacity-90 transition-all duration-300 ${isPlaying ? 'animate-pulse' : ''}`}
+                      onClick={handlePlayAudio}
+                    >
+                      🔊
+                    </button>
+                    <button 
+                      className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl transition-all duration-300 ${currentCard.isLearned ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-500'} ${isUpdating ? 'animate-pulse' : ''}`}
+                      onClick={handleToggleLearned}
+                      disabled={isUpdating}
+                    >
+                      {currentCard.isLearned ? '✓' : '○'}
+                    </button>
+                  </div>
                 </div>
                 <p className="text-xl text-dark mb-8">{currentCard.meaning}</p>
+                {/* <div className="mb-8">
+                  <div className="text-sm text-gray-500 mb-2">学习状态</div>
+                  <div className={`px-4 py-2 rounded-full inline-block ${currentCard.isLearned ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
+                    {currentCard.isLearned ? '已学习' : '未学习'}
+                  </div>
+                </div> */}
 
                 {/* 导航按钮 */}
                 <div className="flex justify-between">

@@ -73,7 +73,26 @@ const HomePage: React.FC = () => {
                 >
                   <div className="text-6xl font-bold text-primary mb-4">{group.level}</div>
                   <h3 className="text-2xl font-bold text-dark mb-2">{group.name}</h3>
-                  <p className="text-gray-500">适合 {group.name} 的孩子</p>
+                  <p className="text-gray-500 mb-4">适合 {group.name} 的孩子</p>
+                  
+                  {/* 学习进度条 */}
+                  {group.progress && (
+                    <div className="mt-4">
+                      <div className="flex justify-between text-sm mb-1">
+                        <span>学习进度</span>
+                        <span>{Math.round(group.progress.percentage)}%</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2.5">
+                        <div 
+                          className="bg-primary h-2.5 rounded-full transition-all duration-500"
+                          style={{ width: `${group.progress.percentage}%` }}
+                        ></div>
+                      </div>
+                      <div className="text-xs text-gray-500 mt-1">
+                        已学习 {group.progress.learned} / {group.progress.total} 个汉字
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

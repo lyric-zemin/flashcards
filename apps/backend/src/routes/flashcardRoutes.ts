@@ -3,7 +3,9 @@ import {
   getAgeGroups, 
   getFlashcardsByAgeGroup, 
   getFlashcardById,
-  getAllFlashcards
+  getAllFlashcards,
+  createFlashcard,
+  importFlashcards
 } from '../controllers/flashcardController'
 
 const router = express.Router()
@@ -19,5 +21,11 @@ router.get('/flashcards/:ageGroupId', getFlashcardsByAgeGroup)
 
 // 获取汉字详情
 router.get('/flashcard/:id', getFlashcardById)
+
+// 创建卡片
+router.post('/flashcard', createFlashcard)
+
+// 批量导入卡片
+router.post('/flashcards/import', importFlashcards)
 
 export default router

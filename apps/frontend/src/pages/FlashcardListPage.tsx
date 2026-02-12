@@ -73,10 +73,17 @@ const FlashcardListPage: React.FC = () => {
             {flashcards.map((card) => (
               <div 
                 key={card.id} 
-                className="bg-white rounded-xl shadow-lg p-4 text-center cursor-pointer hover:transform hover:scale-105 transition-all duration-300"
+                className={`bg-white rounded-xl shadow-lg p-4 text-center cursor-pointer hover:transform hover:scale-105 transition-all duration-300 ${card.isLearned ? 'border-2 border-green-500' : ''}`}
                 onClick={() => handleFlashcardClick(card.id)}
               >
-                <div className="text-4xl font-bold text-primary mb-2">{card.character}</div>
+                <div className="relative">
+                  <div className="text-4xl font-bold text-primary mb-2">{card.character}</div>
+                  {card.isLearned && (
+                    <div className="absolute top-0 right-0 bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs">
+                      ✓
+                    </div>
+                  )}
+                </div>
                 <div className="text-gray-500 mb-1">{card.pinyin}</div>
                 <div className="text-sm text-gray-600">{card.meaning}</div>
               </div>

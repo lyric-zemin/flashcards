@@ -1,12 +1,5 @@
 import express from 'express'
 import {
-  createOrGetUser,
-  getUserInfo,
-  updateUserInfo,
-  getUserProgress,
-  updateLearningProgress
-} from '../controllers/userController'
-import {
   getUserPoints,
   addUserPoints,
   userSignIn
@@ -20,13 +13,6 @@ import {
 } from '../controllers/achievementController'
 
 const router = express.Router()
-
-// 用户相关路由
-router.post('/users', createOrGetUser)
-router.get('/users/:userId', getUserInfo)
-router.put('/users/:userId', updateUserInfo)
-router.get('/users/:userId/progress', getUserProgress)
-router.put('/users/:userId/progress/:flashcardId', updateLearningProgress)
 
 // 积分相关路由
 router.get('/users/:userId/points', getUserPoints)

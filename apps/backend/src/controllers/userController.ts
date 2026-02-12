@@ -170,3 +170,106 @@ export async function updateLearningProgress(req: Request, res: Response) {
     res.status(500).json({ error: '更新学习进度失败' })
   }
 }
+
+/**
+ * 按年龄组获取学习进度
+ * @param req 请求对象
+ * @param res 响应对象
+ */
+export async function getProgressByAgeGroup(req: Request, res: Response) {
+  try {
+    const { userId } = req.params
+
+    const progress = await prisma.userProgress.findMany({
+      where: { userId: parseInt(userId) },
+      include: {
+        flashcard: {
+          include: {
+            ageGroup: true
+          }
+        }
+      }
+    })
+
+    // 按年龄组分组
+    const progressByAgeGroup = progress.reduce((acc, item) => {
+      const ageGroupName = item.flashcard.ageGroup.name
+      if (!acc[ageGroupName]) {
+        acc[ageGroupName] = []
+      }
+      acc[ageGroupName].push(item)
+      return acc
+    }, {} as Record<string, typeof progress>)
+
+    res.json(progressByAgeGroup)
+  } catch (error) {
+    console.error('按年龄组获取学习进度失败:', error)
+    res.status(500).json({ error: '按年龄组获取学习进度失败' })
+  }
+}
+
+/**
+ * 获取学习进度统计
+ * @param req 请求对象
+ * @param res 响应对象
+ */
+export async function getProgressStatistics(req: Request, res: Response) {
+  try {
+    const { userId } = req.params
+
+    // 获取所有卡片数量
+    const totalFlashcards = await prisma.flashcard.count()
+
+    // 获取已学习卡片数量
+    const learnedFlashcards = await prisma.userProgress.count({
+      where: {
+        userId: parseInt(userId),
+        isLearned: true
+      }
+    })
+
+    // 按年龄组统计
+    const ageGroupStats = await prisma.ageGroup.findMany({
+      include: {
+        flashcards: true
+      }
+    })
+
+    const statsByAgeGroup = await Promise.all(
+      ageGroupStats.map(async (ageGroup) => {
+        const ageGroupFlashcards = ageGroup.flashcards.length
+        const learnedInAgeGroup = await prisma.userProgress.count({
+          where: {
+            userId: parseInt(userId),
+            isLearned: true,
+            flashcard: {
+              ageGroupId: ageGroup.id
+            }
+          }
+        })
+
+        return {
+          ageGroupId: ageGroup.id,
+          ageGroupName: ageGroup.name,
+          total: ageGroupFlashcards,
+          learned: learnedInAgeGroup,
+          progress: ageGroupFlashcards > 0 ? (learnedInAgeGroup / ageGroupFlashcards) * 100 : 0
+        }
+      })
+    )
+
+    const overallProgress = totalFlashcards > 0 ? (learnedFlashcards / totalFlashcards) * 100 : 0
+
+    res.json({
+      overall: {
+        total: totalFlashcards,
+        learned: learnedFlashcards,
+        progress: overallProgress
+      },
+      byAgeGroup: statsByAgeGroup
+    })
+  } catch (error) {
+    console.error('获取学习进度统计失败:', error)
+    res.status(500).json({ error: '获取学习进度统计失败' })
+  }
+}

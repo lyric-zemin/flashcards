@@ -3,25 +3,7 @@
  * 用于管理用户积分
  */
 
-import { getUserPoints as fetchUserPoints, addUserPoints as addPoints } from './api'
-
-/**
- * 获取用户ID
- * @returns 用户ID或null
- */
-const getUserId = (): number | null => {
-  const user = localStorage.getItem('user')
-  if (user) {
-    try {
-      const parsedUser = JSON.parse(user)
-      return parsedUser.id || null
-    } catch (error) {
-      console.error('解析用户数据失败:', error)
-      return null
-    }
-  }
-  return null
-}
+import { getUserPoints as fetchUserPoints, addUserPoints as addPoints, getUserId } from './api'
 
 /**
  * 获取用户积分

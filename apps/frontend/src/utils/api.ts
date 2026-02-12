@@ -10,6 +10,11 @@ export interface AgeGroup {
   id: number
   name: string
   level: number
+  progress?: {
+    total: number
+    learned: number
+    percentage: number
+  }
 }
 
 export interface Flashcard {
@@ -21,6 +26,7 @@ export interface Flashcard {
   audioUrl: string
   ageGroupId: number
   ageGroup?: AgeGroup
+  isLearned?: boolean
 }
 
 export interface User {
@@ -110,6 +116,24 @@ const api = axios.create({
     'Content-Type': 'application/json'
   }
 })
+
+/**
+ * 获取用户ID
+ * @returns 用户ID或null
+ */
+export const getUserId = (): number | null => {
+  const user = localStorage.getItem('user')
+  if (user) {
+    try {
+      const parsedUser = JSON.parse(user)
+      return parsedUser.id || null
+    } catch (error) {
+      console.error('解析用户数据失败:', error)
+      return null
+    }
+  }
+  return null
+}
 
 // 请求拦截器
 api.interceptors.request.use(
@@ -203,20 +227,24 @@ export const userSignIn = async (userId: number): Promise<SignInResult> => {
 
 /**
  * 获取所有年龄段
- * @returns 年龄段列表
+ * @returns 年龄段列表（如果用户已登录，返回带学习进度的年龄段列表）
  */
 export const getAgeGroups = async (): Promise<AgeGroup[]> => {
-  const response = await api.get('/age-groups')
+  const userId = getUserId()
+  const params = userId ? { userId } : {}
+  const response = await api.get('/age-groups', { params })
   return response.data
 }
 
 /**
  * 获取指定年龄段的汉字卡片
  * @param ageGroupId 年龄段ID
- * @returns 汉字卡片列表
+ * @returns 汉字卡片列表（如果用户已登录，返回带学习状态的卡片列表）
  */
 export const getFlashcardsByAgeGroup = async (ageGroupId: number): Promise<Flashcard[]> => {
-  const response = await api.get(`/flashcards/${ageGroupId}`)
+  const userId = getUserId()
+  const params = userId ? { userId } : {}
+  const response = await api.get(`/flashcards/${ageGroupId}`, { params })
   return response.data
 }
 
@@ -232,10 +260,24 @@ export const getAllFlashcards = async (): Promise<Flashcard[]> => {
 /**
  * 获取单个汉字卡片详情
  * @param id 汉字卡片ID
- * @returns 汉字卡片详情
+ * @returns 汉字卡片详情（如果用户已登录，返回带学习状态的卡片详情）
  */
 export const getFlashcardById = async (id: number): Promise<Flashcard> => {
-  const response = await api.get(`/flashcard/${id}`)
+  const userId = getUserId()
+  const params = userId ? { userId } : {}
+  const response = await api.get(`/flashcard/${id}`, { params })
+  return response.data
+}
+
+/**
+ * 更新学习进度
+ * @param userId 用户ID
+ * @param flashcardId 卡片ID
+ * @param isLearned 是否已学习
+ * @returns 更新结果
+ */
+export const updateLearningProgress = async (userId: number, flashcardId: number, isLearned: boolean): Promise<unknown> => {
+  const response = await api.put(`/users/${userId}/progress/${flashcardId}`, { isLearned })
   return response.data
 }
 
@@ -275,7 +317,7 @@ export const register = async (username: string, nickname: string, password: str
  * @returns 用户信息
  */
 export const getUserInfo = async (userId: number): Promise<User> => {
-  const response = await api.get(`/gamification/users/${userId}`)
+  const response = await api.get(`/users/${userId}`)
   return response.data
 }
 
