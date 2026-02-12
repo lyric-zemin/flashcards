@@ -45,14 +45,24 @@ const ConnectGame: React.FC = () => {
       } catch (error) {
         console.error('获取游戏数据失败:', error)
         // API调用失败时使用默认数据
+        setFlashcards(defaultGameData)
       } finally {
         setLoading(false)
-        initializeGame()
       }
     }
 
     fetchGameData()
   }, [])
+
+  /**
+   * 初始化游戏
+   */
+  useEffect(() => {
+    if (flashcards.length > 0) {
+      initializeGame()
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [flashcards])
 
   /**
    * 游戏计时
@@ -72,17 +82,7 @@ const ConnectGame: React.FC = () => {
    */
   const initializeGame = () => {
     // 准备游戏数据
-    let gameDataToUse = defaultGameData
-    
-    // 如果从API获取到了数据，转换为游戏数据格式
-    if (flashcards.length > 0) {
-      gameDataToUse = flashcards.filter(item => item.character && item.pinyin)
-      
-      // 如果转换后没有有效数据，使用默认数据
-      if (gameDataToUse.length === 0) {
-        gameDataToUse = defaultGameData
-      }
-    }
+    const gameDataToUse = flashcards
 
     // 生成卡片对
     const newCards: ConnectCard[] = []
@@ -127,8 +127,6 @@ const ConnectGame: React.FC = () => {
     setTotalCount(newCards.length / 2)
     setPoints(undefined)
   }
-
-
 
   /**
    * 处理卡片点击

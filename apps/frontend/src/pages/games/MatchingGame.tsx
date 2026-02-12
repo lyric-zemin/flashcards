@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Header from '../../components/Header'
 import GameResult from '../../components/game/GameResult'
 import { saveGamePoints } from '../../utils/points'
 import { getAllFlashcards } from '../../utils/api'
 import type { Flashcard } from '../../utils/api'
-import { shuffleArray } from '../../utils/gameUtils'
+import { getRandomElements, shuffleArray } from '../../utils/gameUtils'
 import { defaultGameData } from '../../utils/gameConfig'
 
 interface Card {
@@ -34,15 +34,6 @@ const MatchingGame: React.FC = () => {
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
 
-  // 从API获取的flashcard数据
-  const gameData = useMemo(() => {
-    return flashcards.map(card => ({
-      character: card.character,
-      pinyin: card.pinyin,
-      imageUrl: card.imageUrl
-    }))
-  }, [flashcards])
-
   /**
    * 初始化游戏
    */
@@ -68,10 +59,11 @@ const MatchingGame: React.FC = () => {
    * 初始化游戏
    */
   useEffect(() => {
-    if (gameData.length > 0) {
+    if (flashcards.length > 0) {
       initializeGame()
     }
-  }, [gameData])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [flashcards])
 
   /**
    * 游戏计时
@@ -97,8 +89,7 @@ const MatchingGame: React.FC = () => {
     const maxPairs = 6 // 最多6对卡片
     
     // 随机选择卡片，增加趣味性
-    const shuffledGameData = [...gameData].sort(() => Math.random() - 0.5)
-    const limitedGameData = shuffledGameData.slice(0, maxPairs)
+    const limitedGameData = getRandomElements(flashcards, maxPairs)
 
     // 为每个汉字创建卡片
     limitedGameData.forEach((item, index) => {
@@ -134,8 +125,6 @@ const MatchingGame: React.FC = () => {
     setTotalCount(limitedGameData.length)
     setPoints(undefined)
   }
-
-
 
   /**
    * 处理卡片点击

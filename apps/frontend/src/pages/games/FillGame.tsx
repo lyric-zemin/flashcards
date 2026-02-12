@@ -5,7 +5,7 @@ import GameResult from '../../components/game/GameResult'
 import { saveGamePoints } from '../../utils/points'
 import { getAllFlashcards } from '../../utils/api'
 import type { Flashcard } from '../../utils/api'
-import { generateOptions } from '../../utils/gameUtils'
+import { generateOptions, getRandomElements } from '../../utils/gameUtils'
 import { defaultGameData, DEFAULT_IMAGE_URL } from '../../utils/gameConfig'
 
 interface FillQuestion {
@@ -48,14 +48,24 @@ const FillGame: React.FC = () => {
       } catch (error) {
         console.error('获取游戏数据失败:', error)
         // API调用失败时使用默认数据
+        setFlashcards(defaultGameData)
       } finally {
         setLoading(false)
-        initializeGame()
       }
     }
 
     fetchGameData()
   }, [])
+
+  /**
+   * 初始化游戏
+   */
+  useEffect(() => {
+    if (flashcards.length > 0) {
+      initializeGame()
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [flashcards])
 
   /**
    * 游戏计时
@@ -75,17 +85,7 @@ const FillGame: React.FC = () => {
    */
   const initializeGame = () => {
     // 准备游戏数据
-    let gameDataToUse = defaultGameData
-    
-    // 如果从API获取到了数据，转换为游戏数据格式
-    if (flashcards.length > 0) {
-      gameDataToUse = flashcards.filter(item => item.character && item.pinyin)
-      
-      // 如果转换后没有有效数据，使用默认数据
-      if (gameDataToUse.length === 0) {
-        gameDataToUse = defaultGameData
-      }
-    }
+    const gameDataToUse = flashcards
 
     const newQuestions: FillQuestion[] = []
 
@@ -105,8 +105,7 @@ const FillGame: React.FC = () => {
     })
 
     // 随机排序问题
-    const shuffledQuestions = newQuestions.sort(() => Math.random() - 0.5)
-    const selectedQuestions = shuffledQuestions.slice(0, 8)
+    const selectedQuestions = getRandomElements(newQuestions, 8)
     
     setQuestions(selectedQuestions)
     setTotalCount(selectedQuestions.length)
@@ -119,8 +118,6 @@ const FillGame: React.FC = () => {
     setShowFeedback(false)
     setPoints(undefined)
   }
-
-
 
   /**
    * 处理答案选择
@@ -190,7 +187,7 @@ const FillGame: React.FC = () => {
       {/* 主要内容 */}
       <main className="flex-grow py-12">
         <div className="container mx-auto px-4">
-          {loading ? (
+          {loading || questions.length === 0 ? (
             <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-8 text-center">
               <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mx-auto mb-4"></div>
               <h2 className="text-2xl font-bold text-dark">加载中...</h2>

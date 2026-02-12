@@ -5,7 +5,7 @@ import GameResult from '../../components/game/GameResult'
 import { saveGamePoints } from '../../utils/points'
 import { getAllFlashcards } from '../../utils/api'
 import type { Flashcard } from '../../utils/api'
-import { shuffleArray } from '../../utils/gameUtils'
+import { getRandomNumber, shuffleArray } from '../../utils/gameUtils'
 
 interface Stroke {
   id: number
@@ -67,12 +67,21 @@ const PuzzleGame: React.FC = () => {
         // API调用失败时使用默认数据
       } finally {
         setLoading(false)
-        initializeGame()
       }
     }
 
     fetchGameData()
   }, [])
+
+  /**
+   * 初始化游戏
+   */
+  useEffect(() => {
+    // if (flashcards.length > 0) {
+      initializeGame()
+    // }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [flashcards])
 
   /**
    * 游戏计时
@@ -92,24 +101,24 @@ const PuzzleGame: React.FC = () => {
    */
   const initializeGame = () => {
     // 准备游戏数据
-    let gameDataToUse = defaultGameData
+    // TODO: 目前api中不包含笔画数据
+    const gameDataToUse = defaultGameData
     
     // 如果从API获取到了数据，转换为游戏数据格式
-    if (flashcards.length > 0) {
-      gameDataToUse = flashcards.map(card => ({
-        character: card.character,
-        strokes: card.character.split('') // 简单处理，将汉字拆分为单个字符作为笔画
-      })).filter(item => item.strokes.length > 0)
+    // if (flashcards.length > 0) {
+    //   gameDataToUse = flashcards.map(card => ({
+    //     character: card.character,
+    //     strokes: card.character.split('') // 简单处理，将汉字拆分为单个字符作为笔画
+    //   })).filter(item => item.strokes.length > 0)
       
-      // 如果转换后没有有效数据，使用默认数据
-      if (gameDataToUse.length === 0) {
-        gameDataToUse = defaultGameData
-      }
-    }
+    //   // 如果转换后没有有效数据，使用默认数据
+    //   if (gameDataToUse.length === 0) {
+    //     gameDataToUse = defaultGameData
+    //   }
+    // }
 
     // 随机选择一个汉字
-    const randomIndex = Math.floor(Math.random() * gameDataToUse.length)
-    const selectedCharacter = gameDataToUse[randomIndex]
+    const selectedCharacter = gameDataToUse[getRandomNumber(0, gameDataToUse.length - 1)]
     setCurrentCharacter(selectedCharacter.character)
 
     // 生成笔画数据
@@ -152,8 +161,6 @@ const PuzzleGame: React.FC = () => {
     setTotalCount(selectedCharacter.strokes.length)
     setPoints(undefined)
   }
-
-
 
   /**
    * 处理笔画点击

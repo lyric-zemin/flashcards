@@ -5,7 +5,7 @@ import GameResult from '../../components/game/GameResult'
 import { saveGamePoints } from '../../utils/points'
 import { getAllFlashcards } from '../../utils/api'
 import type { Flashcard } from '../../utils/api'
-import { generateOptions } from '../../utils/gameUtils'
+import { generateOptions, getRandomElements } from '../../utils/gameUtils'
 import { defaultGameData } from '../../utils/gameConfig'
 
 interface MemoryCard {
@@ -54,14 +54,24 @@ const MemoryGame: React.FC = () => {
       } catch (error) {
         console.error('获取游戏数据失败:', error)
         // API调用失败时使用默认数据
+        setFlashcards(defaultGameData)
       } finally {
         setLoading(false)
-        initializeGame()
       }
     }
 
     fetchGameData()
   }, [])
+
+  /**
+   * 初始化游戏
+   */
+  useEffect(() => {
+    if (flashcards.length > 0) {
+      initializeGame()
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [flashcards])
 
   /**
    * 游戏计时
@@ -101,21 +111,10 @@ const MemoryGame: React.FC = () => {
    */
   const initializeGame = () => {
     // 准备游戏数据
-    let gameDataToUse = defaultGameData
-    
-    // 如果从API获取到了数据，转换为游戏数据格式
-    if (flashcards.length > 0) {
-      gameDataToUse = flashcards.filter(item => item.character && item.pinyin)
-      
-      // 如果转换后没有有效数据，使用默认数据
-      if (gameDataToUse.length === 0) {
-        gameDataToUse = defaultGameData
-      }
-    }
+    const gameDataToUse = flashcards
 
     // 随机选择6个汉字
-    const shuffledData = [...gameDataToUse].sort(() => Math.random() - 0.5)
-    const selectedData = shuffledData.slice(0, 6).map((item, index) => ({
+    const selectedData = getRandomElements(gameDataToUse, 6).map((item, index) => ({
       id: index,
       character: item.character,
       pinyin: item.pinyin,
@@ -170,8 +169,6 @@ const MemoryGame: React.FC = () => {
     setMemoryTime(10)
     setPoints(undefined)
   }
-
-
 
   /**
    * 开始问题阶段

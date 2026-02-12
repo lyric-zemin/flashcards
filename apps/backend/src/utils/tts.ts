@@ -92,6 +92,7 @@ export async function generateAudioUrl(character: string) {
     // 获取token
     const token = await getBaiduToken()
     if (token) {
+      // https://console.bce.baidu.com/support/?_=1668482508529#/api?product=AI&project=%E8%AF%AD%E9%9F%B3%E6%8A%80%E6%9C%AF&parent=%E8%AF%AD%E9%9F%B3%E5%90%88%E6%88%90&api=text2audio&method=post
       const audioData = await axios.post(
         'https://tsn.baidu.com/text2audio',
         qs.stringify({

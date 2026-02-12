@@ -7,6 +7,7 @@ import { saveGamePoints } from '../../utils/points'
 import { getAllFlashcards } from '../../utils/api'
 import type { Flashcard } from '../../utils/api'
 import { defaultGameData } from '../../utils/gameConfig'
+import { getRandomElements, getRandomNumber } from '../../utils/gameUtils'
 
 interface QuizQuestion {
   id: number
@@ -63,7 +64,7 @@ const QuizGame: React.FC = () => {
       } catch (error) {
         console.error('获取flashcard数据失败:', error)
         // 使用默认数据作为备用
-          setFlashcards(defaultGameData)
+        setFlashcards(defaultGameData)
       } finally {
         setLoading(false)
       }
@@ -98,7 +99,7 @@ const QuizGame: React.FC = () => {
     // 为每个汉字生成不同类型的问题
     gameData.forEach((item, index) => {
       // 随机选择问题类型
-      const questionType = questionTypes[Math.floor(Math.random() * questionTypes.length)]
+      const questionType = questionTypes[getRandomNumber(0, questionTypes.length - 1)]
       
       let question: QuizQuestion
 
@@ -148,8 +149,7 @@ const QuizGame: React.FC = () => {
     })
 
     // 随机排序问题
-    const shuffledQuestions = newQuestions.sort(() => Math.random() - 0.5)
-    const selectedQuestions = shuffledQuestions.slice(0, questionCount)
+    const selectedQuestions = getRandomElements(newQuestions, questionCount)
     
     setQuestions(selectedQuestions)
     setTotalCount(selectedQuestions.length)
@@ -176,7 +176,7 @@ const QuizGame: React.FC = () => {
   const generateOptions = (correct: string, allOptions: string[]): string[] => {
     const options = [correct]
     while (options.length < 4) {
-      const randomOption = allOptions[Math.floor(Math.random() * allOptions.length)]
+      const randomOption = allOptions[getRandomNumber(0, allOptions.length - 1)]
       if (!options.includes(randomOption)) {
         options.push(randomOption)
       }
