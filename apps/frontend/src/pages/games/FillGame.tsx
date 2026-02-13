@@ -240,7 +240,7 @@ const FillGame: React.FC = () => {
                               : option === userAnswers[userAnswers.length - 1]
                               ? 'bg-red-500 text-white'
                               : 'bg-white border-2 border-primary text-primary'
-                            : 'bg-white border-2 border-primary text-primary hover:bg-primary hover:text-white'
+                            : 'bg-white border-2 border-primary text-primary @hover:bg-primary @hover:text-white'
                         }`}
                         onClick={() => !showFeedback && handleAnswerSelect(option)}
                         disabled={showFeedback}

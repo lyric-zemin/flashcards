@@ -282,7 +282,7 @@ const PuzzleGame: React.FC = () => {
                   {stokes.map((stroke) => (
                     <div 
                       key={stroke.id}
-                      className={`aspect-square bg-white border-2 border-primary rounded-lg flex items-center justify-center text-3xl font-bold text-primary cursor-pointer hover:bg-primary hover:text-white transition-colors ${stroke.currentPosition === stroke.position ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      className={`aspect-square bg-white border-2 border-primary rounded-lg flex items-center justify-center text-3xl font-bold text-primary cursor-pointer @hover:bg-primary @hover:text-white transition-colors ${stroke.currentPosition === stroke.position ? 'opacity-50 cursor-not-allowed' : ''}`}
                       onClick={() => stroke.currentPosition !== stroke.position && handleStrokeClick(stroke)}
                     >
                       {stroke.content}

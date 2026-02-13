@@ -115,11 +115,11 @@ const GameModePage: React.FC = () => {
             {gameModes.map((mode) => (
               <div 
                 key={mode.id} 
-                className="bg-white rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 cursor-pointer hover:shadow-xl"
+                className="bg-white rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 @hover:scale-105 cursor-pointer @hover:shadow-xl"
                 onClick={() => handleGameModeSelect(mode.name)}
               >
                 <div className={`${mode.color} text-white p-6 flex items-center justify-center`}>
-                  <div className="text-5xl transform transition-transform duration-300 hover:scale-110">{mode.icon}</div>
+                  <div className="text-5xl transform transition-transform duration-300 @hover:scale-110">{mode.icon}</div>
                 </div>
                 <div className="p-6">
                   <h3 className="text-xl font-bold text-dark mb-2">{mode.name}</h3>

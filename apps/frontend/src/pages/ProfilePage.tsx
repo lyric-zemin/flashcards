@@ -152,7 +152,7 @@ const ProfilePage: React.FC = () => {
                 </div>
               </div>
               <button 
-                className="bg-red-500 text-white px-3 sm:px-4 py-2 rounded-lg font-bold hover:bg-red-600 transition-colors text-sm sm:text-base whitespace-nowrap"
+                className="bg-red-500 text-white px-3 sm:px-4 py-2 rounded-lg font-bold @hover:bg-red-600 transition-colors text-sm sm:text-base whitespace-nowrap"
                 onClick={handleLogout}
               >
                 退出登录
@@ -164,7 +164,7 @@ const ProfilePage: React.FC = () => {
           <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
             <h3 className="text-xl font-bold text-dark mb-4">每日签到</h3>
             <button 
-              className={`bg-secondary text-white px-8 py-3 rounded-lg font-bold hover:bg-opacity-90 transition-colors ${isSigningIn ? 'opacity-70 cursor-not-allowed' : ''}`}
+              className={`bg-secondary text-white px-8 py-3 rounded-lg font-bold @hover:bg-opacity-90 transition-colors ${isSigningIn ? 'opacity-70 cursor-not-allowed' : ''}`}
               onClick={handleSignIn}
               disabled={isSigningIn}
             >

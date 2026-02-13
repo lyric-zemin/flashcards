@@ -61,13 +61,13 @@ const GameResult: React.FC<GameResultProps> = ({
       
       <div className="flex space-x-4 justify-center">
         <button
-          className="bg-primary text-white px-8 py-3 rounded-lg font-bold hover:bg-opacity-90 transition-colors"
+          className="bg-primary text-white px-8 py-3 rounded-lg font-bold @hover:bg-opacity-90 transition-colors"
           onClick={onRetry}
         >
           再玩一次
         </button>
         <button
-          className="bg-gray-500 text-white px-8 py-3 rounded-lg font-bold hover:bg-gray-600 transition-colors"
+          className="bg-gray-500 text-white px-8 py-3 rounded-lg font-bold @hover:bg-gray-600 transition-colors"
           onClick={onBack}
         >
           返回游戏列表

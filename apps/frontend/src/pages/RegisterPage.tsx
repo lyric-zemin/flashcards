@@ -148,7 +148,7 @@ const RegisterPage: React.FC = () => {
 
               <button
                 type="submit"
-                className="w-full bg-primary text-white py-3 rounded-lg font-bold hover:bg-opacity-90 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+                className="w-full bg-primary text-white py-3 rounded-lg font-bold @hover:bg-opacity-90 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
                 disabled={loading}
               >
                 {loading ? '注册中...' : '注册'}

@@ -189,7 +189,7 @@ const FlashcardDetailPage: React.FC = () => {
                   </div>
                   <div className="flex space-x-4">
                     <button 
-                      className={`bg-secondary text-white w-16 h-16 rounded-full flex items-center justify-center text-2xl hover:bg-opacity-90 transition-all duration-300 ${isPlaying ? 'animate-pulse' : ''}`}
+                      className={`bg-secondary text-white w-16 h-16 rounded-full flex items-center justify-center text-2xl @hover:bg-opacity-90 transition-all duration-300 ${isPlaying ? 'animate-pulse' : ''}`}
                       onClick={handlePlayAudio}
                     >
                       🔊
@@ -214,14 +214,14 @@ const FlashcardDetailPage: React.FC = () => {
                 {/* 导航按钮 */}
                 <div className="flex justify-between">
                   <button 
-                    className="bg-gray-200 text-dark px-6 py-3 rounded-lg font-bold hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="bg-gray-200 text-dark px-6 py-3 rounded-lg font-bold @hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     onClick={handlePreviousCard}
                     disabled={allCards.findIndex(card => card.id === currentCard.id) === 0}
                   >
                     上一张
                   </button>
                   <button 
-                    className="bg-primary text-white px-6 py-3 rounded-lg font-bold hover:bg-opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="bg-primary text-white px-6 py-3 rounded-lg font-bold @hover:bg-opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     onClick={handleNextCard}
                     disabled={allCards.findIndex(card => card.id === currentCard.id) === allCards.length - 1}
                   >

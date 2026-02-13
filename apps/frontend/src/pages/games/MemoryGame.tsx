@@ -307,7 +307,7 @@ const MemoryGame: React.FC = () => {
                     {questions[currentQuestion].options.map((option, index) => (
                       <button
                         key={index}
-                        className="bg-white border-2 border-primary rounded-lg py-4 px-6 text-lg font-bold text-primary hover:bg-primary hover:text-white transition-colors"
+                        className="bg-white border-2 border-primary rounded-lg py-4 px-6 text-lg font-bold text-primary @hover:bg-primary @hover:text-white transition-colors"
                         onClick={() => handleAnswerSelect(option)}
                       >
                         {option}

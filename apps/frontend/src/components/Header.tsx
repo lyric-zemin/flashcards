@@ -66,7 +66,7 @@ const Header: React.FC<HeaderProps> = ({
           {/* 左侧：返回按钮 */}
           {showBackButton ? (
             <button
-              className="bg-white text-primary px-3 py-2 rounded-lg font-bold hover:bg-light transition-colors whitespace-nowrap"
+              className="bg-white text-primary px-3 py-2 rounded-lg font-bold @hover:bg-light transition-colors whitespace-nowrap"
               onClick={handleBackClick}
             >
               {backButtonText}
@@ -85,7 +85,7 @@ const Header: React.FC<HeaderProps> = ({
             {showAuthButtons ? (
               isLoggedIn ? (
                 <button
-                  className="bg-white text-primary px-3 py-2 rounded-lg font-bold hover:bg-light transition-colors whitespace-nowrap"
+                  className="bg-white text-primary px-3 py-2 rounded-lg font-bold @hover:bg-light transition-colors whitespace-nowrap"
                   onClick={handleProfileClick}
                 >
                   个人中心
@@ -93,13 +93,13 @@ const Header: React.FC<HeaderProps> = ({
               ) : (
                 <>
                   <button
-                    className="bg-white text-primary px-3 py-2 rounded-lg font-bold hover:bg-light transition-colors whitespace-nowrap"
+                    className="bg-white text-primary px-3 py-2 rounded-lg font-bold @hover:bg-light transition-colors whitespace-nowrap"
                     onClick={handleLoginClick}
                   >
                     登录
                   </button>
                   <button
-                    className="bg-white text-primary px-3 py-2 rounded-lg font-bold hover:bg-light transition-colors whitespace-nowrap"
+                    className="bg-white text-primary px-3 py-2 rounded-lg font-bold @hover:bg-light transition-colors whitespace-nowrap"
                     onClick={handleRegisterClick}
                   >
                     注册

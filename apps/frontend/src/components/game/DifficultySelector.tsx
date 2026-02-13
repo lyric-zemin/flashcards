@@ -21,7 +21,7 @@ const DifficultySelector: React.FC<DifficultySelectorProps> = ({
           className={`flex-1 py-3 rounded-lg font-bold transition-colors ${
             difficulty === 'easy'
               ? 'bg-green-500 text-white'
-              : 'bg-white border-2 border-green-500 text-green-500 hover:bg-green-50'
+              : 'bg-white border-2 border-green-500 text-green-500 @hover:bg-green-50'
           }`}
           onClick={() => onDifficultyChange('easy')}
         >
@@ -31,7 +31,7 @@ const DifficultySelector: React.FC<DifficultySelectorProps> = ({
           className={`flex-1 py-3 rounded-lg font-bold transition-colors ${
             difficulty === 'medium'
               ? 'bg-blue-500 text-white'
-              : 'bg-white border-2 border-blue-500 text-blue-500 hover:bg-blue-50'
+              : 'bg-white border-2 border-blue-500 text-blue-500 @hover:bg-blue-50'
           }`}
           onClick={() => onDifficultyChange('medium')}
         >
@@ -41,7 +41,7 @@ const DifficultySelector: React.FC<DifficultySelectorProps> = ({
           className={`flex-1 py-3 rounded-lg font-bold transition-colors ${
             difficulty === 'hard'
               ? 'bg-red-500 text-white'
-              : 'bg-white border-2 border-red-500 text-red-500 hover:bg-red-50'
+              : 'bg-white border-2 border-red-500 text-red-500 @hover:bg-red-50'
           }`}
           onClick={() => onDifficultyChange('hard')}
         >

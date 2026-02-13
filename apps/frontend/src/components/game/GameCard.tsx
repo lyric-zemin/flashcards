@@ -24,7 +24,7 @@ const GameCard: React.FC<GameCardProps> = ({
   return (
     <div 
       key={id} 
-      className="bg-white rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 cursor-pointer"
+      className="bg-white rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 @hover:scale-105 cursor-pointer"
       onClick={() => onClick(name)}
     >
       <div className={`${color} text-white p-6 flex items-center justify-center`}>

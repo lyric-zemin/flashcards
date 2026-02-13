@@ -71,7 +71,7 @@ export async function getUserInfo(req: Request, res: Response) {
       return res.status(404).json({ error: '用户不存在' })
     }
 
-    res.json(user)
+    res.json({...user, password: undefined})
   } catch (error) {
     console.error('获取用户信息失败:', error)
     res.status(500).json({ error: '获取用户信息失败' })

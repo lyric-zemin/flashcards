@@ -73,7 +73,7 @@ const FlashcardListPage: React.FC = () => {
             {flashcards.map((card) => (
               <div 
                 key={card.id} 
-                className={`bg-white rounded-xl shadow-lg p-4 text-center cursor-pointer hover:transform hover:scale-105 transition-all duration-300 ${card.isLearned ? 'border-2 border-green-500' : ''}`}
+                className={`bg-white rounded-xl shadow-lg p-4 text-center cursor-pointer @hover:transform @hover:scale-105 transition-all duration-300 ${card.isLearned ? 'border-2 border-green-500' : ''}`}
                 onClick={() => handleFlashcardClick(card.id)}
               >
                 <div className="relative">

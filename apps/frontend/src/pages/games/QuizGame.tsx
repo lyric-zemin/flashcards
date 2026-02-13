@@ -303,7 +303,7 @@ const QuizGame: React.FC = () => {
                 />
                 
                 <button
-                  className="mt-8 bg-primary text-white px-8 py-4 rounded-lg font-bold hover:bg-opacity-90 transition-colors"
+                  className="mt-8 bg-primary text-white px-8 py-4 rounded-lg font-bold @hover:bg-opacity-90 transition-colors"
                   onClick={startGame}
                 >
                   开始游戏
@@ -349,7 +349,7 @@ const QuizGame: React.FC = () => {
                               : option === userAnswers[userAnswers.length - 1]
                               ? 'bg-red-500 text-white'
                               : 'bg-white border-2 border-primary text-primary'
-                            : 'bg-white border-2 border-primary text-primary hover:bg-primary hover:text-white'
+                            : 'bg-white border-2 border-primary text-primary @hover:bg-primary @hover:text-white'
                         }`}
                         onClick={() => !showFeedback && handleAnswerSelect(option)}
                         disabled={showFeedback}

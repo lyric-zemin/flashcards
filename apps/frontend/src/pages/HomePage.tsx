@@ -65,7 +65,7 @@ const HomePage: React.FC = () => {
               {ageGroups.map((group) => (
                 <div 
                   key={group.id} 
-                  className="bg-white rounded-xl shadow-lg p-8 text-center cursor-pointer hover:transform hover:scale-105 transition-all duration-300"
+                  className="bg-white rounded-xl shadow-lg p-8 text-center cursor-pointer @hover:transform @hover:scale-105 transition-all duration-300"
                   onClick={() => handleAgeGroupSelect(group.id)}
                 >
                   <div className="text-6xl font-bold text-primary mb-4">{group.level}</div>
@@ -98,7 +98,7 @@ const HomePage: React.FC = () => {
           {/* 游戏化学习入口 */}
           <div className="text-center">
             <h2 className="text-2xl font-bold text-dark mb-6">游戏化学习</h2>
-            <div className="bg-white rounded-xl shadow-lg p-8 text-center cursor-pointer hover:transform hover:scale-105 transition-all duration-300 inline-block"
+            <div className="bg-white rounded-xl shadow-lg p-8 text-center cursor-pointer @hover:transform @hover:scale-105 transition-all duration-300 inline-block"
                  onClick={() => navigate('/games')}>
               <div className="text-6xl mb-4">🎮</div>
               <h3 className="text-2xl font-bold text-dark mb-2">开始游戏学习</h3>

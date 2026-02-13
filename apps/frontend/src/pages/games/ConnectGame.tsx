@@ -256,7 +256,7 @@ const ConnectGame: React.FC = () => {
                           ? 'opacity-50 scale-95'
                           : card.isFlipped
                           ? 'scale-105'
-                          : 'hover:scale-105'
+                          : '@hover:scale-105'
                       }`}
                       onClick={() => handleCardClick(card)}
                     >
