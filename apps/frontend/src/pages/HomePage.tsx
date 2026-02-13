@@ -45,10 +45,6 @@ const HomePage: React.FC = () => {
     )
   }
 
-  // 检查用户登录状态
-  // const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true'
-  // const user = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') || '{}') : null
-
   return (
     <>
       {/* 头部 */}
@@ -56,14 +52,15 @@ const HomePage: React.FC = () => {
         title="汉字启蒙" 
         showAuthButtons={true}
       />
-      <p className="text-center mt-2 text-dark mb-6">选择适合孩子的年龄段</p>
 
       {/* 主要内容 */}
       <div className="flex items-center justify-center py-12">
         <div className="container mx-auto px-4">
           {/* 年龄段选择 */}
           <div className="mb-12">
-            <h2 className="text-2xl font-bold text-dark mb-6 text-center">选择年龄段</h2>
+            <h2 className="text-2xl font-bold text-dark mb-4 text-center">选择年龄段</h2>
+            <p className="text-center text-gray-600 mb-12">选择适合孩子的年龄段</p>
+  
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {ageGroups.map((group) => (
                 <div 

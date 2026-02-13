@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcrypt'
+import { checkAndGrantLearningBadges } from './achievementController'
 
 const prisma = new PrismaClient()
 
@@ -180,6 +181,17 @@ export async function updateLearningProgress(req: Request, res: Response) {
         }
       })
     }
+
+    // 计算用户已学习的汉字数量
+    const learnedCount = await prisma.userProgress.count({
+      where: {
+        userId,
+        isLearned: true
+      }
+    })
+
+    // 检查并授予学习徽章
+    await checkAndGrantLearningBadges(userId, learnedCount)
 
     res.json(progress)
   } catch (error) {

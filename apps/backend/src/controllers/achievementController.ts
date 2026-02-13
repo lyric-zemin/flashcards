@@ -143,41 +143,69 @@ export async function grantUserBadge(req: Request, res: Response) {
  */
 export async function checkAndGrantLearningBadges(userId: number, learnedCount: number) {
   try {
-    // 定义徽章条件
-    const badgeConditions = [
-      { name: '初学者', condition: 'learned_10', requiredCount: 10 },
-      { name: '学习者', condition: 'learned_50', requiredCount: 50 },
-      { name: '汉字达人', condition: 'learned_100', requiredCount: 100 }
-    ]
+    // 查找所有学习类别徽章
+    const learningBadges = await prisma.badge.findMany({
+      where: { category: 'learning' }
+    })
 
-    for (const condition of badgeConditions) {
-      if (learnedCount >= condition.requiredCount) {
-        // 查找对应的徽章
-        const badge = await prisma.badge.findFirst({
-          where: { condition: condition.condition }
+    for (const badge of learningBadges) {
+      if (learnedCount >= badge.requiredValue) {
+        // 检查用户是否已经拥有该徽章
+        const existingBadge = await prisma.userBadge.findFirst({
+          where: {
+            userId,
+            badgeId: badge.id
+          }
         })
 
-        if (badge) {
-          // 检查用户是否已经拥有该徽章
-          const existingBadge = await prisma.userBadge.findFirst({
-            where: {
+        if (!existingBadge) {
+          await prisma.userBadge.create({
+            data: {
               userId,
               badgeId: badge.id
             }
           })
-
-          if (!existingBadge) {
-            await prisma.userBadge.create({
-              data: {
-                userId,
-                badgeId: badge.id
-              }
-            })
-          }
         }
       }
     }
   } catch (error) {
     console.error('检查并授予学习徽章失败:', error)
+  }
+}
+
+/**
+ * 检查并授予签到徽章
+ * @param userId 用户ID
+ * @param consecutiveDays 连续签到天数
+ */
+export async function checkAndGrantSignInBadges(userId: number, consecutiveDays: number) {
+  try {
+    // 查找所有签到类别徽章
+    const signInBadges = await prisma.badge.findMany({
+      where: { category: 'sign_in' }
+    })
+
+    for (const badge of signInBadges) {
+      if (consecutiveDays >= badge.requiredValue) {
+        // 检查用户是否已经拥有该徽章
+        const existingBadge = await prisma.userBadge.findFirst({
+          where: {
+            userId,
+            badgeId: badge.id
+          }
+        })
+
+        if (!existingBadge) {
+          await prisma.userBadge.create({
+            data: {
+              userId,
+              badgeId: badge.id
+            }
+          })
+        }
+      }
+    }
+  } catch (error) {
+    console.error('检查并授予签到徽章失败:', error)
   }
 }

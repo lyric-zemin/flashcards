@@ -342,10 +342,12 @@ async function initData() {
 
     // 插入徽章数据
     const badges = [
-      { name: '初学者', description: '学习10个汉字', icon: '📚', condition: 'learned_10' },
-      { name: '学习者', description: '学习50个汉字', icon: '📖', condition: 'learned_50' },
-      { name: '汉字达人', description: '学习100个汉字', icon: '🎓', condition: 'learned_100' },
-      { name: '签到达人', description: '连续签到7天', icon: '🏅', condition: 'signin_7_days' }
+      { name: '初学者', description: '学习10个汉字', icon: '📚', condition: 'learned_10', category: 'learning', requiredValue: 10 },
+      { name: '学习者', description: '学习50个汉字', icon: '📖', condition: 'learned_50', category: 'learning', requiredValue: 50 },
+      { name: '汉字达人', description: '学习100个汉字', icon: '🎓', condition: 'learned_100', category: 'learning', requiredValue: 100 },
+      { name: '坚持者', description: '连续签到3天', icon: '🏅', condition: 'signin_3_days', category: 'sign_in', requiredValue: 3 },
+      { name: '连续签到王', description: '连续签到7天', icon: '👑', condition: 'signin_7_days', category: 'sign_in', requiredValue: 7 },
+      { name: '签到大师', description: '连续签到30天', icon: '🌟', condition: 'signin_30_days', category: 'sign_in', requiredValue: 30 }
     ]
 
     for (const badge of badges) {

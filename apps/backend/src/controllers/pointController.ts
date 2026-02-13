@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import { PrismaClient } from '@prisma/client'
+import { checkAndGrantSignInBadges } from './achievementController'
 
 const prisma = new PrismaClient()
 
@@ -173,6 +174,9 @@ export async function userSignIn(req: Request, res: Response) {
 
     // 检查是否达成成就
     await checkAchievements(userId)
+
+    // 检查并授予签到徽章
+    await checkAndGrantSignInBadges(userId, consecutiveDays)
 
     res.json({ signIn, consecutiveDays, signInPoints })
   } catch (error) {
