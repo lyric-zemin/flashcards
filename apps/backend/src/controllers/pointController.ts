@@ -129,7 +129,7 @@ export async function userSignIn(req: Request, res: Response) {
         orderBy: { signInDate: 'desc' }
       })
 
-      consecutiveDays = 1
+      consecutiveDays = 2
       for (let i = 0; i < signIns.length - 1; i++) {
         const currentDate = new Date(signIns[i].signInDate)
         currentDate.setHours(0, 0, 0, 0)
